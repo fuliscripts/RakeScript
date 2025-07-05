@@ -91,13 +91,13 @@ addToggle("FullBright", fullbright,
 
 -- WalkSpeed
 local speed = {active = false}
-addToggle("WalkSpeed 100", speed,
+addToggle("WalkSpeed", speed,
     function()
         speed.loop = RunService.RenderStepped:Connect(function()
             local char = LocalPlayer.Character
             if char then
                 local hum = char:FindFirstChildWhichIsA("Humanoid")
-                if hum then hum.WalkSpeed = 100 end
+                if hum then hum.WalkSpeed = 35 end
             end
         end)
     end,
