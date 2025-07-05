@@ -57,7 +57,7 @@ local function addToggle(name, stateRef, onEnable, onDisable)
     button.Size = UDim2.new(1, -10, 0, 30)
     button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     button.TextColor3 = Color3.new(1,1,1)
-    button.Text = "⏹️ " .. name
+    button.Text = "🟩 " .. name
     button.Font = Enum.Font.SourceSans
     button.TextSize = 16
     button.Parent = scrollFrame
@@ -65,10 +65,10 @@ local function addToggle(name, stateRef, onEnable, onDisable)
     button.MouseButton1Click:Connect(function()
         stateRef.active = not stateRef.active
         if stateRef.active then
-            button.Text = "▶️ " .. name
+            button.Text = "✅️ " .. name
             onEnable()
         else
-            button.Text = "⏹️ " .. name
+            button.Text = "🟩 " .. name
             if onDisable then onDisable() end
         end
     end)
@@ -76,7 +76,7 @@ end
 
 -- FullBright
 local fullbright = {active = false}
-addToggle("FullBright", fullbright, function()
+addToggle("☀️ FullBright", fullbright, function()
     fullbright.loop = RunService.RenderStepped:Connect(function()
         Lighting.FogEnd = 1e9
         Lighting.Brightness = 3
@@ -88,12 +88,12 @@ end)
 
 -- WalkSpeed 100
 local speed = {active = false}
-addToggle("WalkSpeed 100", speed, function()
+addToggle("⚡️ WalkSpeed", speed, function()
     speed.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if char then
             local hum = char:FindFirstChildWhichIsA("Humanoid")
-            if hum then hum.WalkSpeed = 100 end
+            if hum then hum.WalkSpeed = 30 end
         end
     end)
 end, function()
@@ -107,7 +107,7 @@ end)
 
 -- StunStick Aura
 local aura = {active = false}
-addToggle("StunStick Aura", aura, function()
+addToggle("🪄 StunStick Aura", aura, function()
     aura.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if char and char:FindFirstChild("HumanoidRootPart") then
@@ -130,7 +130,7 @@ end)
 
 -- Kill Rake (loop)
 local killRake = {active = false}
-addToggle("Kill Rake (loop)", killRake, function()
+addToggle("🔪 Kill Rake", killRake, function()
     killRake.loop = RunService.RenderStepped:Connect(function()
         for _, m in pairs(Workspace:GetDescendants()) do
             if m:IsA("Model") and m.Name:lower():find("rake") then
@@ -147,7 +147,7 @@ end)
 
 -- Kill NPCs
 local killNPC = {active = false}
-addToggle("Kill NPCs (loop)", killNPC, function()
+addToggle("🔪 Kill NPCs (Seren)", killNPC, function()
     killNPC.loop = RunService.RenderStepped:Connect(function()
         for _, m in pairs(Workspace:GetDescendants()) do
             if m:IsA("Model") and not Players:FindFirstChild(m.Name) then
@@ -164,7 +164,7 @@ end)
 
 -- Infinite Stamina
 local stamina = {active = false}
-addToggle("Infinite Stamina", stamina, function()
+addToggle("💫 Infinite Stamina", stamina, function()
     stamina.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if char then
@@ -182,7 +182,7 @@ end)
 
 -- ESP Trampas y Scraps
 local espItems = {active = false}
-addToggle("ESP Trampas y Scraps", espItems, function()
+addToggle("👀 ESP Trampas y Scraps", espItems, function()
     espItems.loop = RunService.RenderStepped:Connect(function()
         for _, obj in pairs(Workspace:GetDescendants()) do
             if obj:IsA("Part") and (obj.Name:lower():find("trap") or obj.Name:lower():find("rusty tramp") or obj.Name:lower():find("scrap")) then
@@ -216,7 +216,7 @@ end)
 
 -- ESP Players + Rake + HP
 local espPlayers = {active = false}
-addToggle("ESP Players + Rake + HP", espPlayers, function()
+addToggle("👀 ESP Players + Rake + HP", espPlayers, function()
     espPlayers.loop = RunService.RenderStepped:Connect(function()
         for _, plr in pairs(Players:GetPlayers()) do
             if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
@@ -269,7 +269,7 @@ end)
 
 -- No Fall Damage
 local noFall = {active = false}
-addToggle("No Fall Damage", noFall, function()
+addToggle("☁️ No Fall Damage", noFall, function()
     noFall.loop = RunService.Stepped:Connect(function()
         local char = LocalPlayer.Character
         if char then
@@ -286,7 +286,7 @@ end)
 
 -- Campo de Fuerza
 local forceField = {active = false}
-addToggle("Campo de Fuerza Anti-Rake", forceField, function()
+addToggle("🌐 Campo de Fuerza Anti-Rake", forceField, function()
     forceField.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if char and char:FindFirstChild("HumanoidRootPart") then
@@ -305,7 +305,7 @@ end)
 
 -- Hide Underground
 local hideUnderground = {active = false}
-addToggle("Hide Underground", hideUnderground, function()
+addToggle("✨️ Hide Underground", hideUnderground, function()
     hideUnderground.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if char and char:FindFirstChild("HumanoidRootPart") and char.HumanoidRootPart.Position.Y > -20 then
@@ -322,7 +322,7 @@ end)
 
 -- Basic Noclip
 local noclip = {active = false}
-addToggle("Basic Noclip", noclip, function()
+addToggle("🌀 Basic Noclip", noclip, function()
     noclip.loop = RunService.Stepped:Connect(function()
         local char = LocalPlayer.Character
         if char and char:FindFirstChildOfClass("Humanoid") then
@@ -335,7 +335,7 @@ end)
 
 -- Kill Players
 local killPlayers = {active = false}
-addToggle("Kill Players (loop)", killPlayers, function()
+addToggle("🔪 Kill Players", killPlayers, function()
     killPlayers.loop = RunService.RenderStepped:Connect(function()
         for _, plr in pairs(Players:GetPlayers()) do
             if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChildOfClass("Humanoid") then
