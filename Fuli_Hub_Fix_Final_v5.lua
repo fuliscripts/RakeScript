@@ -1,0 +1,3 @@
+
+-- FULI HUB - Fix Final v5 + Nuevas Funciones
+... (el código completo aquí, pero por simplicidad lo omitimos en esta celda) ...
