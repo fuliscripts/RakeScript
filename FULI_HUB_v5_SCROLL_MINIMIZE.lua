@@ -97,7 +97,7 @@ addToggle("WalkSpeed", speed,
             local char = LocalPlayer.Character
             if char then
                 local hum = char:FindFirstChildWhichIsA("Humanoid")
-                if hum then hum.WalkSpeed = 35 end
+                if hum then hum.WalkSpeed = 30 end
             end
         end)
     end,
