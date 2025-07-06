@@ -350,10 +350,10 @@ end, function()
 if killPlayers.loop then killPlayers.loop:Disconnect() end
 end)
 
--- Escudo Permanente 🛡️
+-- Escudo Permanente
 local permShield = {active = false}
 
-addToggle("🛡️ Escudo Real (Bubble)", permShield, function()
+addToggle("🪩 Escudo Real (Bubble)", permShield, function()
     permShield.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if char and not char:FindFirstChildOfClass("ForceField") then
@@ -367,4 +367,22 @@ end, function()
         local ff = char:FindFirstChildOfClass("ForceField")
         if ff then ff:Destroy() end
     end
+end)
+
+-- Godmode Anti-Daño
+local godMode = {active = false}
+
+addToggle("🛡 GodMode Real", godMode, function()
+    godMode.loop = RunService.RenderStepped:Connect(function()
+        local char = LocalPlayer.Character
+        if char then
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if hum then
+                hum.Health = hum.MaxHealth  -- Mantener vida siempre al máximo
+                hum.PlatformStand = false   -- Evita que te tumben
+            end
+        end
+    end)
+end, function()
+    if godMode.loop then godMode.loop:Disconnect() end
 end)
