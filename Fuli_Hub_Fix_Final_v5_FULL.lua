@@ -353,7 +353,7 @@ end)
 -- Escudo Permanente
 local permShield = {active = false}
 
-addToggle("🪩 Escudo Real (Bubble)", permShield, function()
+addToggle("🛡 Escudo Real (Bubble)", permShield, function()
     permShield.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if char and not char:FindFirstChildOfClass("ForceField") then
@@ -390,16 +390,16 @@ end)
 -- Escudo ForceField
 local forceFieldToggle = {active = false}
 
-addToggle("🛡️ Escudo Real", forceFieldToggle, function()
+addToggle("🛡️ ForceField", forceFieldToggle, function()
     forceFieldToggle.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if char and not char:FindFirstChildOfClass("ForceField") then
-            local ff = Instance.new("ForceField", char)
+            local ff = Instance.new("ForceField")
             ff.Parent = char
         end
     end)
 
-    -- Para cuando reaparezcas
+    -- También se vuelve a poner al reaparecer
     LocalPlayer.CharacterAdded:Connect(function()
         wait(1)
         if forceFieldToggle.active then
