@@ -352,21 +352,46 @@ end)
 
 -- Escudo Permanente 🛡️
 local permShield = {active = false}
+
 addToggle("🛡️ Escudo Permanente", permShield, function()
     permShield.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
-        if char and not char:FindFirstChildOfClass("ForceField") then
-            local ff = Instance.new("ForceField", char)
-            ff.Visible = false
+        if char then
+            -- Crear o mantener el ForceField real (protección real)
+            if not char:FindFirstChildOfClass("ForceField") then
+                local ff = Instance.new("ForceField", char)
+                ff.Visible = false -- Invisible para que no se note el brillo azul
+            end
+
+            -- (Opcional) Efecto visual de SelectionBoxes permanente:
+            local bodyParts = {"Head", "Torso", "Left Arm", "Right Arm", "Left Leg", "Right Leg"}
+            for _, partName in ipairs(bodyParts) do
+                local part = char:FindFirstChild(partName)
+                if part and not part:FindFirstChild("VisualShield") then
+                    local box = Instance.new("SelectionBox")
+                    box.Name = "VisualShield"
+                    box.Adornee = part
+                    box.Parent = part
+                    box.Color3 = Color3.new(0, 1, 1) -- Color del escudo visual (turquesa)
+                end
+            end
         end
     end)
 end, function()
     if permShield.loop then permShield.loop:Disconnect() end
     local char = LocalPlayer.Character
     if char then
+        -- Borrar ForceField real
         local ff = char:FindFirstChildOfClass("ForceField")
         if ff then ff:Destroy() end
+
+        -- Borrar escudo visual (SelectionBoxes)
+        local parts = {"Head", "Torso", "Left Arm", "Right Arm", "Left Leg", "Right Leg"}
+        for _, pName in ipairs(parts) do
+            local p = char:FindFirstChild(pName)
+            if p and p:FindFirstChild("VisualShield") then
+                p.VisualShield:Destroy()
+            end
+        end
     end
 end)
-
--- Fin del código completo
