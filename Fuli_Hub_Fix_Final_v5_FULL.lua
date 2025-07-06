@@ -353,7 +353,7 @@ end)
 -- Escudo Permanente
 local permShield = {active = false}
 
-addToggle("🛡 Escudo Real (Bubble)", permShield, function()
+addToggle("🛡 ForceField", permShield, function()
     permShield.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if char and not char:FindFirstChildOfClass("ForceField") then
@@ -372,7 +372,7 @@ end)
 -- Godmode Anti-Daño
 local godMode = {active = false}
 
-addToggle("🛡 GodMode Real", godMode, function()
+addToggle("🛡 GodMode", godMode, function()
     godMode.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if char then
@@ -387,34 +387,3 @@ end, function()
     if godMode.loop then godMode.loop:Disconnect() end
 end)
 
--- Escudo ForceField
-local forceFieldToggle = {active = false}
-
-addToggle("🛡️ ForceField", forceFieldToggle, function()
-    forceFieldToggle.loop = RunService.RenderStepped:Connect(function()
-        local char = LocalPlayer.Character
-        if char and not char:FindFirstChildOfClass("ForceField") then
-            local ff = Instance.new("ForceField")
-            ff.Parent = char
-        end
-    end)
-
-    -- También se vuelve a poner al reaparecer
-    LocalPlayer.CharacterAdded:Connect(function()
-        wait(1)
-        if forceFieldToggle.active then
-            local newChar = LocalPlayer.Character
-            if newChar and not newChar:FindFirstChildOfClass("ForceField") then
-                Instance.new("ForceField", newChar)
-            end
-        end
-    end)
-end, function()
-    if forceFieldToggle.loop then forceFieldToggle.loop:Disconnect() end
-
-    local char = LocalPlayer.Character
-    if char then
-        local ff = char:FindFirstChildOfClass("ForceField")
-        if ff then ff:Destroy() end
-    end
-end)
