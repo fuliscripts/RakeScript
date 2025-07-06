@@ -360,7 +360,7 @@ addToggle("🛡️ Escudo Permanente", permShield, function()
             -- Crear o mantener el ForceField real (protección real)
             if not char:FindFirstChildOfClass("ForceField") then
                 local ff = Instance.new("ForceField", char)
-                ff.Visible = false -- Invisible para que no se note el brillo azul
+                ff.Visible = true -- Invisible para que no se note el brillo azul
             end
 
             -- (Opcional) Efecto visual de SelectionBoxes permanente:
