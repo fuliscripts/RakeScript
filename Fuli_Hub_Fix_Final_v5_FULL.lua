@@ -390,7 +390,7 @@ end)
 -- Escudo ForceField
 local forceFieldToggle = {active = false}
 
-addToggle("🛡️ Escudo Real (Natural Disaster)", forceFieldToggle, function()
+addToggle("🛡️ Escudo Real", forceFieldToggle, function()
     forceFieldToggle.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if char and not char:FindFirstChildOfClass("ForceField") then
