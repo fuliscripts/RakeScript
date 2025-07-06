@@ -353,41 +353,18 @@ end)
 -- Escudo Permanente 🛡️
 local permShield = {active = false}
 
-addToggle("🛡️ Escudo Permanente", permShield, function()
+addToggle("🛡️ Escudo Real (Bubble)", permShield, function()
     permShield.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
-        if char then
-            -- Crear o mantener ForceField real
-            if not char:FindFirstChildOfClass("ForceField") then
-                local ff = Instance.new("ForceField", char)
-                ff.Visible = false -- Invisibilidad opcional
-            end
-
-            -- Crear Visual en cada parte (R6 y R15)
-            for _, part in ipairs(char:GetChildren()) do
-                if part:IsA("BasePart") and not part:FindFirstChild("VisualShield") then
-                    local box = Instance.new("SelectionBox")
-                    box.Name = "VisualShield"
-                    box.Adornee = part
-                    box.Parent = part
-                    box.Color3 = Color3.new(0, 1, 1) -- Color del escudo visual
-                end
-            end
+        if char and not char:FindFirstChildOfClass("ForceField") then
+            Instance.new("ForceField", char) -- Este es el de la burbuja real
         end
     end)
 end, function()
     if permShield.loop then permShield.loop:Disconnect() end
-
     local char = LocalPlayer.Character
     if char then
-        -- Quitar ForceField real
         local ff = char:FindFirstChildOfClass("ForceField")
         if ff then ff:Destroy() end
-
-        -- Quitar VisualShield de todas las partes
-        for _, part in ipairs(char:GetChildren()) do
-            local vis = part:FindFirstChild("VisualShield")
-            if vis then vis:Destroy() end
-        end
     end
 end)
