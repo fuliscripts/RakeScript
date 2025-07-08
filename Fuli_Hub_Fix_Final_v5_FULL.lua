@@ -232,9 +232,9 @@ addToggle("🔎 ESP Scraps + Tramps", espItems, function()
     loop = RunService.RenderStepped:Connect(function()
         for _, obj in pairs(Workspace:GetDescendants()) do
             if obj:IsA("Part") and (
-                obj.Name:lower():find("rake tramp") or 
+                obj.Name:lower():find("rake tramps") or 
                 obj.Name:lower():find("rusty tramp") or 
-                obj.Name:lower():find("scrap")
+                obj.Name:lower():find("scraps")
             ) then
                 local distance = math.floor((obj.Position - Camera.CFrame.Position).Magnitude)
 
