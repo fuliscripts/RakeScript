@@ -347,7 +347,7 @@ end, function()
         -- Desanclar para que puedas moverte de nuevo
         hrp.Anchored = originalAnchorState
         -- Subir más alto para salir bien
-        hrp.CFrame = hrp.CFrame + Vector3.new(0, 50, 0)
+        hrp.CFrame = hrp.CFrame + Vector3.new(0, 10, 0)
     end
 
     if tunnel then tunnel:Destroy() end
