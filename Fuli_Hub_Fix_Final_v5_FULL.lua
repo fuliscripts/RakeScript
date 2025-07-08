@@ -106,26 +106,37 @@ end
 end)
 
 -- StunStick Aura
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+
+local LocalPlayer = Players.LocalPlayer
+
 local aura = {active = false}
+local loop
+
 addToggle("🦴 StunStick Aura", aura, function()
-aura.loop = RunService.RenderStepped:Connect(function()
-local char = LocalPlayer.Character
-if char and char:FindFirstChild("HumanoidRootPart") then
-for _, m in pairs(Workspace:GetDescendants()) do
-if m:IsA("Model") and m.Name ~= LocalPlayer.Name and m:FindFirstChildOfClass("Humanoid") then
-local hrp = m:FindFirstChild("HumanoidRootPart")
-if hrp and (hrp.Position - char.HumanoidRootPart.Position).Magnitude < 10 then
-local hum = m:FindFirstChildOfClass("Humanoid")
-if hum and hum.Health > 0 then
-hum:TakeDamage(395)
-end
-end
-end
-end
-end
-end)
+    loop = RunService.RenderStepped:Connect(function()
+        local char = LocalPlayer.Character
+        if not char then return end
+
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
+
+        for _, model in pairs(Workspace:GetDescendants()) do
+            if model:IsA("Model") and model.Name:lower():find("rake") and model:FindFirstChild("HumanoidRootPart") then
+                local rakeHRP = model.HumanoidRootPart
+                if (rakeHRP.Position - hrp.Position).Magnitude < 10 then
+                    local hum = model:FindFirstChildOfClass("Humanoid")
+                    if hum and hum.Health > 0 then
+                        hum:TakeDamage(395)  -- Daño fuerte tipo StunStick
+                    end
+                end
+            end
+        end
+    end)
 end, function()
-if aura.loop then aura.loop:Disconnect() end
+    if loop then loop:Disconnect() end
 end)
 
 -- Kill Rake (loop)
