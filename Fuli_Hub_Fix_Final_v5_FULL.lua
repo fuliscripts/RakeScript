@@ -331,3 +331,38 @@ end, function()
     if godMode.loop then godMode.loop:Disconnect() end
 end)
 
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local spy = {active = false}
+local connections = {}
+
+addToggle("🕵️‍♀️ Spy Remotes", spy, function()
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("RemoteEvent") or v:IsA("RemoteFunction") then
+            -- OnClientEvent
+            local onClient = v.OnClientEvent:Connect(function(...)
+                if spy.active then
+                    print("📥 OnClientEvent:", v:GetFullName(), ...)
+                end
+            end)
+            table.insert(connections, onClient)
+
+            -- FireServer
+            if v.FireServer then
+                local oldFire = v.FireServer
+                local hook
+                hook = hookfunction(v.FireServer, function(self, ...)
+                    if spy.active then
+                        print("📤 FireServer:", v:GetFullName(), ...)
+                    end
+                    return oldFire(self, ...)
+                end)
+                table.insert(connections, hook)
+            end
+        end
+    end
+end, function()
+    -- Desactivación (solo deja de imprimir porque los hooks no se pueden soltar en ejecución)
+    spy.active = false
+end)
