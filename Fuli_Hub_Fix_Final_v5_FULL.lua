@@ -267,18 +267,27 @@ local LocalPlayer = Players.LocalPlayer
 local noclip = {active = false}
 local loop
 
-addToggle("🌀 Noclip", noclip, function()
+addToggle("Noclip PRO 🚀", noclip, function()
     loop = RunService.Stepped:Connect(function()
         local char = LocalPlayer.Character
         if char then
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            if hum then
-                hum:ChangeState(11)  -- Estado 11 = Noclip (Physics)
+            for _, part in pairs(char:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
             end
         end
     end)
 end, function()
     if loop then loop:Disconnect() end
+    local char = LocalPlayer.Character
+    if char then
+        for _, part in pairs(char:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = true
+            end
+        end
+    end
 end)
 
 -- Kill Players
