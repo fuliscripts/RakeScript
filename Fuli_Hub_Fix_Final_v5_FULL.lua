@@ -180,6 +180,33 @@ end, function()
 if stamina.loop then stamina.loop:Disconnect() end
 end)
 
+-- No Fall Damage
+local noFall = {active = false}
+addToggle("☁️ No Fall Damage", noFall, function()
+    noFall.loop = RunService.Heartbeat:Connect(function()
+        local char = LocalPlayer.Character
+        if char then
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if hum then
+                -- Desactivar solo los estados que causan daño
+                hum:SetStateEnabled(Enum.HumanoidStateType.Freefall, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+            end
+        end
+    end)
+end, function()
+    if noFall.loop then noFall.loop:Disconnect() end
+    -- Al apagar, volver todo a normal
+    local char = LocalPlayer.Character
+    if char then
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum then
+            hum:SetStateEnabled(Enum.HumanoidStateType.Freefall, true)
+            hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
+        end
+    end
+end)
+
 -- ESP Trampas y Scraps
 local espItems = {active = false}
 addToggle("👀 ESP Trampas y Scraps", espItems, function()
@@ -267,7 +294,6 @@ end, function()
     if espPlayers.loop then espPlayers.loop:Disconnect() end
 end)
 
-
 -- Basic Noclip
 local noclip = {active = false}
 addToggle("🌀 Basic Noclip", noclip, function()
@@ -279,23 +305,6 @@ end
 end)
 end, function()
 if noclip.loop then noclip.loop:Disconnect() end
-end)
-
--- No Fall Damage
-local noFall = {active = false}
-addToggle("☁️ No Fall Damage", noFall, function()
-    noFall.loop = RunService.Heartbeat:Connect(function()
-        local char = LocalPlayer.Character
-        if char then
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            if hum then
-                -- Solo prevenir daño, sin alterar gravedad o estado físico
-                hum:ChangeState(Enum.HumanoidStateType.GettingUp)
-            end
-        end
-    end)
-end, function()
-    if noFall.loop then noFall.loop:Disconnect() end
 end)
 
 -- Kill Players
