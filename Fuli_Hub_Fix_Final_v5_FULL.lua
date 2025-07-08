@@ -234,7 +234,7 @@ addToggle("🔎 ESP Scraps + Tramps", espItems, function()
             if obj:IsA("Part") and (
                 obj.Name:lower():find("rake traps") or 
                 obj.Name:lower():find("rusty traps") or 
-                obj.Name:lower():find("scraps")
+                obj.Name:lower():find("scrap metal")
             ) then
                 local distance = math.floor((obj.Position - Camera.CFrame.Position).Magnitude)
 
