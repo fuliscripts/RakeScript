@@ -215,63 +215,56 @@ end
 end)
 
 -- ESP Players + Rake + HP
-local espItems = {active = false}
-
-addToggle("👀 ESP Trampas y Chatarras + Distancia", espItems, function()
-    espItems.loop = RunService.RenderStepped:Connect(function()
-        for _, obj in pairs(Workspace:GetDescendants()) do
-            if obj:IsA("Part") and (
-                obj.Name:lower():find("trap") or 
-                obj.Name:lower():find("rusty tramp") or 
-                obj.Name:lower():find("scrap")
-            ) then
-                local distance = math.floor((obj.Position - Camera.CFrame.Position).Magnitude)
-
-                if not obj:FindFirstChild("FuliESP_Item") then
-                    local bill = Instance.new("BillboardGui", obj)
-                    bill.Name = "FuliESP_Item"
-                    bill.Size = UDim2.new(0, 100, 0, 40)
+local espPlayers = {active = false}
+addToggle("ESP Players + Rake + HP", espPlayers, function()
+    espPlayers.loop = RunService.RenderStepped:Connect(function()
+        for _, plr in pairs(Players:GetPlayers()) do
+            if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                local hrp = plr.Character.HumanoidRootPart
+                local hum = plr.Character:FindFirstChildOfClass("Humanoid")
+                local distance = math.floor((hrp.Position - Camera.CFrame.Position).Magnitude)
+                local health = hum and math.floor(hum.Health) or 0
+                if not hrp:FindFirstChild("FuliESP") then
+                    local bill = Instance.new("BillboardGui", hrp)
+                    bill.Name = "FuliESP"
+                    bill.Size = UDim2.new(0,100,0,40)
                     bill.AlwaysOnTop = true
-
                     local text = Instance.new("TextLabel", bill)
-                    text.Size = UDim2.new(1, 0, 1, 0)
+                    text.Size = UDim2.new(1,0,1,0)
                     text.BackgroundTransparency = 1
-                    text.TextColor3 = Color3.new(0, 1, 1)
+                    text.TextColor3 = Color3.new(1,1,1)
                     text.TextScaled = true
-                    text.Text = obj.Name .. " [" .. distance .. "m]"
+                    text.Text = plr.Name .. " [".. distance .."m | ".. health .." HP]"
                 else
-                    obj.FuliESP_Item.TextLabel.Text = obj.Name .. " [" .. distance .. "m]"
+                    hrp.FuliESP.TextLabel.Text = plr.Name .. " [".. distance .."m | ".. health .." HP]"
+                end
+            end
+        end
+        for _, m in pairs(Workspace:GetDescendants()) do
+            if m:IsA("Model") and m.Name:lower():find("rake") and m:FindFirstChild("HumanoidRootPart") then
+                local hrp = m.HumanoidRootPart
+                local hum = m:FindFirstChildOfClass("Humanoid")
+                local distance = math.floor((hrp.Position - Camera.CFrame.Position).Magnitude)
+                local health = hum and math.floor(hum.Health) or 0
+                if not hrp:FindFirstChild("FuliESP") then
+                    local bill = Instance.new("BillboardGui", hrp)
+                    bill.Name = "FuliESP"
+                    bill.Size = UDim2.new(0,100,0,40)
+                    bill.AlwaysOnTop = true
+                    local text = Instance.new("TextLabel", bill)
+                    text.Size = UDim2.new(1,0,1,0)
+                    text.BackgroundTransparency = 1
+                    text.TextColor3 = Color3.new(1,0,0)
+                    text.TextScaled = true
+                    text.Text = "Rake [".. distance .."m | ".. health .." HP]"
+                else
+                    hrp.FuliESP.TextLabel.Text = "Rake [".. distance .."m | ".. health .." HP]"
                 end
             end
         end
     end)
 end, function()
-    if espItems.loop then espItems.loop:Disconnect() end
-    for _, obj in pairs(Workspace:GetDescendants()) do
-        if obj:IsA("Part") then
-            local gui = obj:FindFirstChild("FuliESP_Item")
-            if gui then gui:Destroy() end
-        end
-    end
-end)
-
--- Campo de Fuerza
-local forceField = {active = false}
-addToggle("🌐 Campo de Fuerza Anti-Rake", forceField, function()
-forceField.loop = RunService.RenderStepped:Connect(function()
-local char = LocalPlayer.Character
-if char and char:FindFirstChild("HumanoidRootPart") then
-for _, m in pairs(Workspace:GetDescendants()) do
-if m:IsA("Model") and m.Name:lower():find("rake") and m:FindFirstChild("HumanoidRootPart") then
-if (m.HumanoidRootPart.Position - char.HumanoidRootPart.Position).Magnitude < 15 then
-m.HumanoidRootPart.Velocity = Vector3.new(0, 200, 0)
-end
-end
-end
-end
-end)
-end, function()
-if forceField.loop then forceField.loop:Disconnect() end
+    if espPlayers.loop then espPlayers.loop:Disconnect() end
 end)
 
 -- Hide Underground
