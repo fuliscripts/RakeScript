@@ -107,7 +107,7 @@ end)
 
 -- StunStick Aura
 local aura = {active = false}
-addToggle("🪈 StunStick Aura", aura, function()
+addToggle("🦴 StunStick Aura", aura, function()
 aura.loop = RunService.RenderStepped:Connect(function()
 local char = LocalPlayer.Character
 if char and char:FindFirstChild("HumanoidRootPart") then
@@ -267,7 +267,7 @@ local LocalPlayer = Players.LocalPlayer
 local noclip = {active = false}
 local loop
 
-addToggle("Noclip PRO 🚀", noclip, function()
+addToggle("🌀 Noclip", noclip, function()
     loop = RunService.Stepped:Connect(function()
         local char = LocalPlayer.Character
         if char then
