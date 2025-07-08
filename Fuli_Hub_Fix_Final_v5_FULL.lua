@@ -180,28 +180,28 @@ end, function()
 if stamina.loop then stamina.loop:Disconnect() end
 end)
 
--- Fuli Fall Damage Real 💖 (Caes normal sin perder vida)
+-- Fuli No Fall Damage Real 💖 (ForceField Invis + Sin trabas)
 local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 
 local noFall = {active = false}
+local loop
 
-addToggle("☁️ No Fall Damage", noFall, function()
-    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-    local hum = char:WaitForChild("Humanoid")
-
-    -- Desactiva los estados de caída que causan daño
-    hum:SetStateEnabled(Enum.HumanoidStateType.Freefall, false)
-    hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+addToggle("No Fall Damage (ForceField Safe)", noFall, function()
+    loop = RunService.Heartbeat:Connect(function()
+        local char = LocalPlayer.Character
+        if char and not char:FindFirstChildOfClass("ForceField") then
+            local ff = Instance.new("ForceField", char)
+            ff.Visible = false  -- invisible para todos
+        end
+    end)
 end, function()
+    if loop then loop:Disconnect() end
     local char = LocalPlayer.Character
     if char then
-        local hum = char:FindFirstChildOfClass("Humanoid")
-        if hum then
-            -- Vuelve a habilitar los estados cuando se apaga
-            hum:SetStateEnabled(Enum.HumanoidStateType.Freefall, true)
-            hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
-        end
+        local ff = char:FindFirstChildOfClass("ForceField")
+        if ff then ff:Destroy() end
     end
 end)
 
