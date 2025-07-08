@@ -216,7 +216,7 @@ end)
 
 -- ESP Players + Rake + HP
 local espPlayers = {active = false}
-addToggle("ESP Players + Rake + HP", espPlayers, function()
+addToggle("👀 ESP Players + Rake + HP", espPlayers, function()
     espPlayers.loop = RunService.RenderStepped:Connect(function()
         for _, plr in pairs(Players:GetPlayers()) do
             if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
@@ -265,6 +265,23 @@ addToggle("ESP Players + Rake + HP", espPlayers, function()
     end)
 end, function()
     if espPlayers.loop then espPlayers.loop:Disconnect() end
+end)
+
+-- No Fall Damage
+local noFall = {active = false}
+addToggle("☁️ No Fall Damage", noFall, function()
+    noFall.loop = RunService.RenderStepped:Connect(function()
+        local char = LocalPlayer.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if hum then
+                hum:SetStateEnabled(Enum.HumanoidStateType.Freefall, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+            end
+        end
+    end)
+end, function()
+    if noFall.loop then noFall.loop:Disconnect() end
 end)
 
 -- Hide Underground
