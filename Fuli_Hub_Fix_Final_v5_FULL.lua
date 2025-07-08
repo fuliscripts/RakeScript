@@ -354,7 +354,7 @@ local LocalPlayer = Players.LocalPlayer
 local fling = {active = false}
 local loop
 
-addToggle("💥 Fling Players", fling, function()
+addToggle("💥 Fling All", fling, function()
     loop = RunService.Heartbeat:Connect(function()
         for _, plr in pairs(Players:GetPlayers()) do
             if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
