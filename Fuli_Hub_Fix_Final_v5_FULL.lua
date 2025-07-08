@@ -228,18 +228,40 @@ local espItems = {active = false}
 local loop
 
 -- ESP tramps and scraps
-addToggle("🔎 ESP Scraps + Tramps", espItems, function()
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
+local Camera = Workspace.CurrentCamera
+
+local LocalPlayer = Players.LocalPlayer
+
+local espItems = {active = false}
+local loop
+
+addToggle("🔎 ESP Trampas y Chatarras (Fix)"), espItems, function()
     loop = RunService.RenderStepped:Connect(function()
         for _, obj in pairs(Workspace:GetDescendants()) do
-            if obj:IsA("Part") and (
-                obj.Name:lower():find("rake traps") or 
-                obj.Name:lower():find("rusty traps") or 
-                obj.Name:lower():find("scrap metal")
-            ) then
-                local distance = math.floor((obj.Position - Camera.CFrame.Position).Magnitude)
+            local isTarget = false
+            local pos = nil
 
+            -- Detectar partes o modelos
+            if obj:IsA("Part") and (obj.Name:lower():find("trap") or obj.Name:lower():find("scrap")) then
+                isTarget = true
+                pos = obj.Position
+            elseif obj:IsA("Model") and (obj.Name:lower():find("trap") or obj.Name:lower():find("scrap")) then
+                local primary = obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")
+                if primary then
+                    isTarget = true
+                    pos = primary.Position
+                end
+            end
+
+            if isTarget and pos then
+                local distance = math.floor((pos - Camera.CFrame.Position).Magnitude)
+
+                -- Crear ESP si no existe
                 if not obj:FindFirstChild("FuliESP_Item") then
-                    local bill = Instance.new("BillboardGui", obj)
+                    local bill = Instance.new("BillboardGui", obj:IsA("Model") and (obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")) or obj)
                     bill.Name = "FuliESP_Item"
                     bill.Size = UDim2.new(0, 100, 0, 40)
                     bill.AlwaysOnTop = true
@@ -247,11 +269,10 @@ addToggle("🔎 ESP Scraps + Tramps", espItems, function()
                     local text = Instance.new("TextLabel", bill)
                     text.Size = UDim2.new(1, 0, 1, 0)
                     text.BackgroundTransparency = 1
-                    text.TextColor3 = Color3.new(0, 1, 1)
+                    text.TextColor3 = Color3.new(1, 1, 0)
                     text.TextScaled = true
                     text.Text = obj.Name .. " [" .. distance .. "m]"
                 else
-                    -- Actualizar texto y distancia en tiempo real
                     obj.FuliESP_Item.TextLabel.Text = obj.Name .. " [" .. distance .. "m]"
                 end
             end
@@ -260,9 +281,8 @@ addToggle("🔎 ESP Scraps + Tramps", espItems, function()
 end, function()
     if loop then loop:Disconnect() end
     for _, obj in pairs(Workspace:GetDescendants()) do
-        if obj:IsA("Part") then
-            local gui = obj:FindFirstChild("FuliESP_Item")
-            if gui then gui:Destroy() end
+        if obj:FindFirstChild("FuliESP_Item") then
+            obj.FuliESP_Item:Destroy()
         end
     end
 end)
