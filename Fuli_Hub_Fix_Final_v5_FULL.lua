@@ -183,32 +183,29 @@ end)
 -- No Fall Damage
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
 
 local noFall = {active = false}
-local hookSet = false
-local oldNewIndex
+local loop
 
-addToggle("☁️ No Fall Damage", noFall, function()
-    if not hookSet then
-        local mt = getrawmetatable(game)
-        setreadonly(mt, false)
-        oldNewIndex = mt.__newindex
-
-        mt.__newindex = newcclosure(function(self, key, value)
-            -- Si intentan bajar HP y el No Fall está activo ➔ bloqueamos el cambio
-            if tostring(self) == "HP" and key == "Value" and noFall.active then
-                if value < self.Value then
-                    return  -- Bloquea la reducción de vida
+addToggle("No Fall Damage (Freeze HP)", noFall, function()
+    loop = RunService.RenderStepped:Connect(function()
+        local char = LocalPlayer.Character
+        if char then
+            local stats = char:FindFirstChild("Stats")
+            if stats then
+                local hp = stats:FindFirstChild("HP")
+                if hp then
+                    -- Congela la vida al valor actual (por defecto 100)
+                    if hp.Value < 100 then
+                        hp.Value = 100
+                    end
                 end
             end
-            return oldNewIndex(self, key, value)
-        end)
-
-        hookSet = true
-    end
+        end
+    end)
 end, function()
-    -- Desactivación solo apaga la protección, pero el hook queda
-    noFall.active = false
+    if loop then loop:Disconnect() end
 end)
 
 -- ESP Players + Rake + HP
