@@ -180,29 +180,37 @@ end, function()
 if stamina.loop then stamina.loop:Disconnect() end
 end)
 
--- Fuli No Fall Damage Real 💖 (ForceField Invis + Sin trabas)
+-- No Fall Damage Real para The Rake 💖 by Seren
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
 
 local noFall = {active = false}
 local loop
 
-addToggle("No Fall Damage", noFall, function()
+addToggle("☁️ No Fall Damage", noFall, function()
     loop = RunService.Heartbeat:Connect(function()
         local char = LocalPlayer.Character
-        if char and not char:FindFirstChildOfClass("ForceField") then
-            local ff = Instance.new("ForceField", char)
-            ff.Visible = false  -- invisible para todos
+        if char then
+            -- Buscar el Humanoid real
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            -- Buscar Stats donde el juego guarda la vida real
+            local stats = char:FindFirstChild("Stats")
+            if stats then
+                for _, v in pairs(stats:GetDescendants()) do
+                    if v:IsA("NumberValue") and v.Name:lower():find("health") then
+                        v.Value = 100 -- Siempre vida máxima interna
+                    end
+                end
+            end
+            -- Por si acaso, también curar el Humanoid normal
+            if hum and hum.Health < hum.MaxHealth then
+                hum.Health = hum.MaxHealth
+            end
         end
     end)
 end, function()
     if loop then loop:Disconnect() end
-    local char = LocalPlayer.Character
-    if char then
-        local ff = char:FindFirstChildOfClass("ForceField")
-        if ff then ff:Destroy() end
-    end
 end)
 
 -- ESP Players + Rake + HP
