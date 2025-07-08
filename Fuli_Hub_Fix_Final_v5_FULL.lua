@@ -180,37 +180,36 @@ end, function()
 if stamina.loop then stamina.loop:Disconnect() end
 end)
 
--- No Fall Damage Real para The Rake 💖 by Seren
+-- Fuli Anti Fall Damage Real para The Rake 💖
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local noFall = {active = false}
-local loop
+local originalFireServer
 
-addToggle("☁️ No Fall Damage", noFall, function()
-    loop = RunService.Heartbeat:Connect(function()
-        local char = LocalPlayer.Character
-        if char then
-            -- Buscar el Humanoid real
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            -- Buscar Stats donde el juego guarda la vida real
-            local stats = char:FindFirstChild("Stats")
-            if stats then
-                for _, v in pairs(stats:GetDescendants()) do
-                    if v:IsA("NumberValue") and v.Name:lower():find("health") then
-                        v.Value = 100 -- Siempre vida máxima interna
-                    end
+addToggle("No Fall Damage", noFall, function()
+    -- Hookear RemoteEvent de muerte si existe
+    for _, v in pairs(ReplicatedStorage:GetDescendants()) do
+        if v:IsA("RemoteEvent") and v.Name:lower():find("damage") then
+            originalFireServer = v.FireServer
+            v.FireServer = function(self, ...)
+                local args = {...}
+                -- Si es daño de caída, lo bloqueamos
+                if noFall.active and tostring(args[1]):lower():find("fall") then
+                    return
                 end
-            end
-            -- Por si acaso, también curar el Humanoid normal
-            if hum and hum.Health < hum.MaxHealth then
-                hum.Health = hum.MaxHealth
+                return originalFireServer(self, unpack(args))
             end
         end
-    end)
+    end
 end, function()
-    if loop then loop:Disconnect() end
+    -- Restaurar FireServer original al desactivarlo
+    for _, v in pairs(ReplicatedStorage:GetDescendants()) do
+        if v:IsA("RemoteEvent") and v.Name:lower():find("damage") and originalFireServer then
+            v.FireServer = originalFireServer
+        end
+    end
 end)
 
 -- ESP Players + Rake + HP
