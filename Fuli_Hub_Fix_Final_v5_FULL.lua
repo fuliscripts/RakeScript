@@ -346,3 +346,23 @@ local spy = {active = false}
 local oldNamecall
 local hooked = false
 
+-- Fling All
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+local fling = {active = false}
+local loop
+
+addToggle("💥 Fling Players", fling, function()
+    loop = RunService.Heartbeat:Connect(function()
+        for _, plr in pairs(Players:GetPlayers()) do
+            if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                -- Empuja al jugador hacia arriba
+                plr.Character.HumanoidRootPart.Velocity = Vector3.new(0, 300, 0)
+            end
+        end
+    end)
+end, function()
+    if loop then loop:Disconnect() end
+end)
