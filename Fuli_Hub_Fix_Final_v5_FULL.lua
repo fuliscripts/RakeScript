@@ -279,7 +279,7 @@ local hideDig = {active = false}
 local tunnel, tunnelHeight = nil, 15  -- MÁS ABAJO (antes estaba en 10)
 local originalAnchorState = false
 
-addToggle("🕳️ Hide Underground (Final PRO)", hideDig, function()
+addToggle("🕳️ Hide Underground", hideDig, function()
     local char = LocalPlayer.Character
     if not char or not char:FindFirstChild("HumanoidRootPart") then return end
     local hrp = char.HumanoidRootPart
