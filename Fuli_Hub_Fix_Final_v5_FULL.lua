@@ -180,35 +180,44 @@ end, function()
 if stamina.loop then stamina.loop:Disconnect() end
 end)
 
--- No Fall Damage ULTIMATE 💖 (Fuli Fix 100%)
+-- No Fall Damage Universal 💖 By Seren para Fuli
 local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
+
 local noFall = {active = false}
-local connection
+local heartbeatConnection
+local charAddedConnection
 
 addToggle("☁️ No Fall Damage", noFall, function()
-    connection = LocalPlayer.CharacterAdded:Connect(function(char)
+    local function applyNoFall(char)
         local hum = char:WaitForChild("Humanoid")
-        hum.StateChanged:Connect(function(old, new)
-            if noFall.active and (new == Enum.HumanoidStateType.Freefall or new == Enum.HumanoidStateType.FallingDown) then
-                hum:ChangeState(Enum.HumanoidStateType.Landed)
+        heartbeatConnection = RunService.Heartbeat:Connect(function()
+            if noFall.active and char:FindFirstChild("HumanoidRootPart") then
+                -- Método 1: Resetear velocidad Y (para Natural Disaster)
+                char.HumanoidRootPart.Velocity = Vector3.new(
+                    char.HumanoidRootPart.Velocity.X,
+                    math.max(char.HumanoidRootPart.Velocity.Y, -25),  -- Nunca dejar caer demasiado rápido
+                    char.HumanoidRootPart.Velocity.Z
+                )
+                -- Método 2: Bloquear estados (para The Rake)
+                if hum:GetState() == Enum.HumanoidStateType.Freefall or hum:GetState() == Enum.HumanoidStateType.FallingDown then
+                    hum:ChangeState(Enum.HumanoidStateType.Running)
+                end
             end
         end)
-    end)
+    end
 
-    -- Si ya tienes personaje:
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-        local hum = LocalPlayer.Character.Humanoid
-        hum.StateChanged:Connect(function(old, new)
-            if noFall.active and (new == Enum.HumanoidStateType.Freefall or new == Enum.HumanoidStateType.FallingDown) then
-                hum:ChangeState(Enum.HumanoidStateType.Landed)
-            end
-        end)
+    if LocalPlayer.Character then
+        applyNoFall(LocalPlayer.Character)
     end
+
+    charAddedConnection = LocalPlayer.CharacterAdded:Connect(function(char)
+        applyNoFall(char)
+    end)
 end, function()
-    if connection then
-        connection:Disconnect()
-    end
+    if heartbeatConnection then heartbeatConnection:Disconnect() end
+    if charAddedConnection then charAddedConnection:Disconnect() end
 end)
 
 -- ESP Trampas y Scraps
@@ -331,7 +340,7 @@ end)
 -- Escudo Permanente
 local permShield = {active = false}
 
-addToggle("🛡 ForceField", permShield, function()
+addToggle("🌐 ForceField", permShield, function()
     permShield.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if char and not char:FindFirstChildOfClass("ForceField") then
