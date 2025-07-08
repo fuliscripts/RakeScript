@@ -183,29 +183,31 @@ end)
 -- No Fall Damage
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local RunService = game:GetService("RunService")
 
 local noFall = {active = false}
 local loop
 
-addToggle("No Fall Damage (Freeze HP)", noFall, function()
-    loop = RunService.RenderStepped:Connect(function()
+addToggle("No Fall Damage (State Block)", noFall, function()
+    loop = game:GetService("RunService").Heartbeat:Connect(function()
         local char = LocalPlayer.Character
         if char then
-            local stats = char:FindFirstChild("Stats")
-            if stats then
-                local hp = stats:FindFirstChild("HP")
-                if hp then
-                    -- Congela la vida al valor actual (por defecto 100)
-                    if hp.Value < 100 then
-                        hp.Value = 100
-                    end
-                end
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if hum then
+                hum:SetStateEnabled(Enum.HumanoidStateType.Freefall, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
             end
         end
     end)
 end, function()
     if loop then loop:Disconnect() end
+    local char = LocalPlayer.Character
+    if char then
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum then
+            hum:SetStateEnabled(Enum.HumanoidStateType.Freefall, true)
+            hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
+        end
+    end
 end)
 
 -- ESP Players + Rake + HP
