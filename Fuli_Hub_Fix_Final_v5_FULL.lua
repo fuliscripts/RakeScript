@@ -238,11 +238,12 @@ local LocalPlayer = Players.LocalPlayer
 local espItems = {active = false}
 local loop
 
-addToggle("🔎 ESP Scraps + Tramps (Real-Time)", espItems, function()
+addToggle("🔎 ESP Scraps + Trampas (Colores)", espItems, function()
     loop = RunService.RenderStepped:Connect(function()
         for _, obj in pairs(Workspace:GetDescendants()) do
             local isTarget = false
             local targetPart = nil
+            local color = Color3.new(1, 1, 1) -- Color por defecto (blanco)
 
             -- Verificar si es Scrap o Trampa
             if obj:IsA("Part") and (
@@ -267,6 +268,15 @@ addToggle("🔎 ESP Scraps + Tramps (Real-Time)", espItems, function()
             end
 
             if isTarget and targetPart then
+                local lowerName = obj.Name:lower()
+
+                -- Asignar color según objeto
+                if lowerName:find("scrap") then
+                    color = Color3.new(0, 1, 1) -- Azul Claro 💙
+                elseif lowerName:find("trap") then
+                    color = Color3.new(1, 1, 0) -- Amarillo 🟡
+                end
+
                 local distance = math.floor((targetPart.Position - Camera.CFrame.Position).Magnitude)
 
                 local existingESP = targetPart:FindFirstChild("FuliESP_Item")
@@ -280,14 +290,14 @@ addToggle("🔎 ESP Scraps + Tramps (Real-Time)", espItems, function()
                     text.Name = "ESPText"
                     text.Size = UDim2.new(1, 0, 1, 0)
                     text.BackgroundTransparency = 1
-                    text.TextColor3 = Color3.new(0, 1, 1)
+                    text.TextColor3 = color
                     text.TextScaled = true
                     text.Text = obj.Name .. " [" .. distance .. "m]"
                 else
-                    -- Actualizar texto y distancia en tiempo real
                     local text = existingESP:FindFirstChild("ESPText")
                     if text then
                         text.Text = obj.Name .. " [" .. distance .. "m]"
+                        text.TextColor3 = color  -- Asegurar color correcto en cada frame
                     end
                 end
             end
