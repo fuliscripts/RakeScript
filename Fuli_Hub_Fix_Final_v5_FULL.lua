@@ -180,36 +180,27 @@ end, function()
 if stamina.loop then stamina.loop:Disconnect() end
 end)
 
--- Fuli Anti Fall Damage Real para The Rake 💖
+-- Fuli No Fall Damage (Estilo Video Real) 💖 100% para The Rake: Remastered
+
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local noFall = {active = false}
-local originalFireServer
+-- Hook al metatable
+local mt = getrawmetatable(game)
+setreadonly(mt, false)
+local oldNamecall = mt.__namecall
 
-addToggle("No Fall Damage", noFall, function()
-    -- Hookear RemoteEvent de muerte si existe
-    for _, v in pairs(ReplicatedStorage:GetDescendants()) do
-        if v:IsA("RemoteEvent") and v.Name:lower():find("damage") then
-            originalFireServer = v.FireServer
-            v.FireServer = function(self, ...)
-                local args = {...}
-                -- Si es daño de caída, lo bloqueamos
-                if noFall.active and tostring(args[1]):lower():find("fall") then
-                    return
-                end
-                return originalFireServer(self, unpack(args))
-            end
-        end
+mt.__namecall = newcclosure(function(self, ...)
+    local args = {...}
+    local method = getnamecallmethod()
+
+    -- Filtra los FireServer relacionados con daño
+    if method == "FireServer" and tostring(self):lower():find("damage") then
+        -- Bloquea el daño (incluye daño por caída)
+        return
     end
-end, function()
-    -- Restaurar FireServer original al desactivarlo
-    for _, v in pairs(ReplicatedStorage:GetDescendants()) do
-        if v:IsA("RemoteEvent") and v.Name:lower():find("damage") and originalFireServer then
-            v.FireServer = originalFireServer
-        end
-    end
+
+    return oldNamecall(self, unpack(args))
 end)
 
 -- ESP Players + Rake + HP
