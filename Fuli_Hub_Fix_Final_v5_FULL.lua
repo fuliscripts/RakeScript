@@ -189,7 +189,7 @@ local noFall = {active = false}
 local hooked = false
 local originalTakeDamage
 
-addToggle("No Fall Damage (Humanoid Hook)", noFall, function()
+addToggle("No Fall Damage", noFall, function()
     local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
     local hum = char:WaitForChild("Humanoid")
 
@@ -329,22 +329,3 @@ local spy = {active = false}
 local oldNamecall
 local hooked = false
 
-addToggle("🕵️‍♀️ Spy All Remotes (Live)", spy, function()
-    if not hooked then
-        local mt = getrawmetatable(game)
-        setreadonly(mt, false)
-        oldNamecall = mt.__namecall
-
-        mt.__namecall = newcclosure(function(self, ...)
-            local method = getnamecallmethod()
-            if spy.active and (method == "FireServer" or method == "InvokeServer") then
-                print("🔥 Remote Called:", self:GetFullName(), ...)
-            end
-            return oldNamecall(self, ...)
-        end)
-
-        hooked = true
-    end
-end, function()
-    spy.active = false  -- Deja de imprimir sin quitar el hook
-end)
