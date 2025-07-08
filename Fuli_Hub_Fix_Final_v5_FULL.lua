@@ -180,36 +180,35 @@ end, function()
 if stamina.loop then stamina.loop:Disconnect() end
 end)
 
--- Fuli No Fall Damage (Video Style) 💖 Con Toggle
-
+-- No Fall Damage
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
 local noFall = {active = false}
-local hooked = false
-local oldNamecall
+local hookSet = false
+local oldNewIndex
 
-addToggle("No Fall Damage", noFall, function()
-    if not hooked then
+addToggle("☁️ No Fall Damage", noFall, function()
+    if not hookSet then
         local mt = getrawmetatable(game)
         setreadonly(mt, false)
-        oldNamecall = mt.__namecall
+        oldNewIndex = mt.__newindex
 
-        mt.__namecall = newcclosure(function(self, ...)
-            local args = {...}
-            local method = getnamecallmethod()
-
-            if noFall.active and method == "FireServer" and tostring(self):lower():find("damage") then
-                return -- Bloquea daño por caída y cualquier otro daño que use FireServer con "damage"
+        mt.__newindex = newcclosure(function(self, key, value)
+            -- Si intentan bajar HP y el No Fall está activo ➔ bloqueamos el cambio
+            if tostring(self) == "HP" and key == "Value" and noFall.active then
+                if value < self.Value then
+                    return  -- Bloquea la reducción de vida
+                end
             end
-
-            return oldNamecall(self, unpack(args))
+            return oldNewIndex(self, key, value)
         end)
 
-        hooked = true
+        hookSet = true
     end
 end, function()
-    -- Desactivación: solo apaga la protección, pero el hook queda listo por si se reactiva
+    -- Desactivación solo apaga la protección, pero el hook queda
+    noFall.active = false
 end)
 
 -- ESP Players + Rake + HP
