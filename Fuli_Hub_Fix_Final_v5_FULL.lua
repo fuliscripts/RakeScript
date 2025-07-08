@@ -217,9 +217,59 @@ end, function()
     noFall.active = false
 end)
 
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
+local Camera = Workspace.CurrentCamera
+
+local LocalPlayer = Players.LocalPlayer
+
+local espItems = {active = false}
+local loop
+
+-- ESP tramps and scraps
+addToggle("🔎 ESP Scraps + Tramps", espItems, function()
+    loop = RunService.RenderStepped:Connect(function()
+        for _, obj in pairs(Workspace:GetDescendants()) do
+            if obj:IsA("Part") and (
+                obj.Name:lower():find("rake tramp") or 
+                obj.Name:lower():find("rusty tramp") or 
+                obj.Name:lower():find("scrap")
+            ) then
+                local distance = math.floor((obj.Position - Camera.CFrame.Position).Magnitude)
+
+                if not obj:FindFirstChild("FuliESP_Item") then
+                    local bill = Instance.new("BillboardGui", obj)
+                    bill.Name = "FuliESP_Item"
+                    bill.Size = UDim2.new(0, 100, 0, 40)
+                    bill.AlwaysOnTop = true
+
+                    local text = Instance.new("TextLabel", bill)
+                    text.Size = UDim2.new(1, 0, 1, 0)
+                    text.BackgroundTransparency = 1
+                    text.TextColor3 = Color3.new(0, 1, 1)
+                    text.TextScaled = true
+                    text.Text = obj.Name .. " [" .. distance .. "m]"
+                else
+                    -- Actualizar texto y distancia en tiempo real
+                    obj.FuliESP_Item.TextLabel.Text = obj.Name .. " [" .. distance .. "m]"
+                end
+            end
+        end
+    end)
+end, function()
+    if loop then loop:Disconnect() end
+    for _, obj in pairs(Workspace:GetDescendants()) do
+        if obj:IsA("Part") then
+            local gui = obj:FindFirstChild("FuliESP_Item")
+            if gui then gui:Destroy() end
+        end
+    end
+end)
+
 -- ESP Players + Rake + HP
 local espPlayers = {active = false}
-addToggle("👀 ESP Players + Rake", espPlayers, function()
+addToggle("🔎 ESP Players + Rake", espPlayers, function()
     espPlayers.loop = RunService.RenderStepped:Connect(function()
         for _, plr in pairs(Players:GetPlayers()) do
             if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
