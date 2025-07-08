@@ -216,7 +216,7 @@ end)
 
 -- ESP Players + Rake + HP
 local espPlayers = {active = false}
-addToggle("👀 ESP Players + Rake + HP", espPlayers, function()
+addToggle("👀 ESP Players + Rake", espPlayers, function()
 espPlayers.loop = RunService.RenderStepped:Connect(function()
 for _, plr in pairs(Players:GetPlayers()) do
 if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
