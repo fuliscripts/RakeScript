@@ -180,60 +180,29 @@ end, function()
 if stamina.loop then stamina.loop:Disconnect() end
 end)
 
--- No Fall Damage (Auto-Heal Instantáneo 💖)
+-- Fuli Fall Damage Real 💖 (Caes normal sin perder vida)
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 
 local noFall = {active = false}
-local loop
 
 addToggle("☁️ No Fall Damage", noFall, function()
-    loop = RunService.Heartbeat:Connect(function()
-        local char = LocalPlayer.Character
-        if char then
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            if hum and hum.Health < hum.MaxHealth then
-                hum.Health = hum.MaxHealth
-            end
-        end
-    end)
-end, function()
-    if loop then loop:Disconnect() end
-end)
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local hum = char:WaitForChild("Humanoid")
 
--- ESP Trampas y Scraps
-local espItems = {active = false}
-addToggle("👀 ESP Trampas y Scraps", espItems, function()
-espItems.loop = RunService.RenderStepped:Connect(function()
-for _, obj in pairs(Workspace:GetDescendants()) do
-if obj:IsA("Part") and (obj.Name:lower():find("trap") or obj.Name:lower():find("rusty tramp") or obj.Name:lower():find("scrap")) then
-local distance = math.floor((obj.Position - Camera.CFrame.Position).Magnitude)
-if not obj:FindFirstChild("FuliESP_Item") then
-local bill = Instance.new("BillboardGui", obj)
-bill.Name = "FuliESP_Item"
-bill.Size = UDim2.new(0, 100, 0, 40)
-bill.AlwaysOnTop = true
-local text = Instance.new("TextLabel", bill)
-text.Size = UDim2.new(1, 0, 1, 0)
-text.BackgroundTransparency = 1
-text.TextColor3 = Color3.new(0, 1, 1)
-text.TextScaled = true
-text.Text = obj.Name .. " [" .. distance .. "m]"
-else
-obj.FuliESP_Item.TextLabel.Text = obj.Name .. " [" .. distance .. "m]"
-end
-end
-end
-end)
+    -- Desactiva los estados de caída que causan daño
+    hum:SetStateEnabled(Enum.HumanoidStateType.Freefall, false)
+    hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
 end, function()
-if espItems.loop then espItems.loop:Disconnect() end
-for _, obj in pairs(Workspace:GetDescendants()) do
-if obj:IsA("Part") then
-local gui = obj:FindFirstChild("FuliESP_Item")
-if gui then gui:Destroy() end
-end
-end
+    local char = LocalPlayer.Character
+    if char then
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum then
+            -- Vuelve a habilitar los estados cuando se apaga
+            hum:SetStateEnabled(Enum.HumanoidStateType.Freefall, true)
+            hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
+        end
+    end
 end)
 
 -- ESP Players + Rake + HP
