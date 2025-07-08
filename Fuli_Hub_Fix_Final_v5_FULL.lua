@@ -238,7 +238,7 @@ local LocalPlayer = Players.LocalPlayer
 local espItems = {active = false}
 local loop
 
-addToggle("🔎 ESP Trampas y Chatarras (Fix)"), espItems, function()
+addToggle("🔎 ESP Trampas y Chatarras", espItems, function()
     loop = RunService.RenderStepped:Connect(function()
         for _, obj in pairs(Workspace:GetDescendants()) do
             local isTarget = false
