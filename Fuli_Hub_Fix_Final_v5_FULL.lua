@@ -188,7 +188,7 @@ local LocalPlayer = Players.LocalPlayer
 local noFall = {active = false}
 local loop
 
-addToggle("No Fall Damage (ForceField Safe)", noFall, function()
+addToggle("No Fall Damage", noFall, function()
     loop = RunService.Heartbeat:Connect(function()
         local char = LocalPlayer.Character
         if char and not char:FindFirstChildOfClass("ForceField") then
