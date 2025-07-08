@@ -183,31 +183,27 @@ end)
 -- No Fall Damage
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
 
 local noFall = {active = false}
-local loop
+local hooked = false
+local originalTakeDamage
 
-addToggle("No Fall Damage (State Block)", noFall, function()
-    loop = game:GetService("RunService").Heartbeat:Connect(function()
-        local char = LocalPlayer.Character
-        if char then
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            if hum then
-                hum:SetStateEnabled(Enum.HumanoidStateType.Freefall, false)
-                hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+addToggle("No Fall Damage (Humanoid Hook)", noFall, function()
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local hum = char:WaitForChild("Humanoid")
+
+    if hum and not hooked then
+        originalTakeDamage = hookfunction(hum.TakeDamage, function(_, amount)
+            if noFall.active then
+                return -- Bloquear daño
             end
-        end
-    end)
-end, function()
-    if loop then loop:Disconnect() end
-    local char = LocalPlayer.Character
-    if char then
-        local hum = char:FindFirstChildOfClass("Humanoid")
-        if hum then
-            hum:SetStateEnabled(Enum.HumanoidStateType.Freefall, true)
-            hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
-        end
+            return originalTakeDamage(_, amount)
+        end)
+        hooked = true
     end
+end, function()
+    noFall.active = false
 end)
 
 -- ESP Players + Rake + HP
