@@ -267,7 +267,7 @@ end)
 
 -- Basic Noclip
 local noclip = {active = false}
-addToggle("🌀 Basic Noclip", noclip, function()
+addToggle("🌀 Noclip", noclip, function()
 noclip.loop = RunService.Stepped:Connect(function()
 local char = LocalPlayer.Character
 if char and char:FindFirstChildOfClass("Humanoid") then
@@ -297,7 +297,6 @@ end)
 
 -- Escudo Permanente
 local permShield = {active = false}
-
 addToggle("🌐 ForceField", permShield, function()
     permShield.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
@@ -317,7 +316,7 @@ end)
 -- Godmode Anti-Daño
 local godMode = {active = false}
 
-addToggle("🛡 GodMode", godMode, function()
+addToggle("🏥 Auto Heal", godMode, function()
     godMode.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if char then
