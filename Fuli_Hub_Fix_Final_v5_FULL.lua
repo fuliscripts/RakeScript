@@ -304,28 +304,37 @@ end)
 -- Hide Underground
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-
 local LocalPlayer = Players.LocalPlayer
 
-local hideUnderground = {active = false}
-local loop
+local hideDig = {active = false}
+local tunnel, tunnelHeight = nil, 10
 
-addToggle("🕳️ Hide Underground", hideUnderground, function()
-    loop = RunService.RenderStepped:Connect(function()
-        local char = LocalPlayer.Character
-        if char and char:FindFirstChild("HumanoidRootPart") then
-            -- Baja al personaje poco a poco para esconderse
-            char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame - Vector3.new(0, 1, 0)
+addToggle("🕳️ Hide Underground"), hideDig, function()
+    local char = LocalPlayer.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    local hrp = char.HumanoidRootPart
+
+    -- Crear "túnel" invisible
+    tunnel = Instance.new("Part")
+    tunnel.Name = "FuliTunnel"
+    tunnel.Size = Vector3.new(6, 1, 6)
+    tunnel.Transparency = 1
+    tunnel.CanCollide = false
+    tunnel.Anchored = true
+    tunnel.CFrame = hrp.CFrame * CFrame.new(0, -tunnelHeight, 0)
+    tunnel.Parent = workspace
+
+    -- Mover jugador bajo el túnel suavemente
+    RunService:BindToRenderStep("FuliHide", Enum.RenderPriority.Character.Value, function()
+        if hideDig.active and hrp then
+            hrp.CFrame = CFrame.new(tunnel.Position + Vector3.new(0, 2, 0))
         end
     end)
 end, function()
-    if loop then loop:Disconnect() end
-
-    -- Cuando apagues, vuelve a subir al jugador para salir
-    local char = LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") then
-        char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame + Vector3.new(0, 50, 0)
-    end
+    hideDig.active = false
+    RunService:UnbindFromRenderStep("FuliHide")
+    if tunnel then tunnel:Destroy() end
+    tunnel = nil
 end)
 
 -- Kill Players
