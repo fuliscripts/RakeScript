@@ -189,7 +189,7 @@ local noFall = {active = false}
 local hooked = false
 local originalTakeDamage
 
-addToggle("No Fall Damage", noFall, function()
+addToggle("☁️ No Fall Damage", noFall, function()
     local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
     local hum = char:WaitForChild("Humanoid")
 
@@ -208,7 +208,7 @@ end)
 
 -- ESP Players + Rake + HP
 local espPlayers = {active = false}
-addToggle("👀 ESP Players + Rake + HP", espPlayers, function()
+addToggle("👀 ESP Players + Rake", espPlayers, function()
     espPlayers.loop = RunService.RenderStepped:Connect(function()
         for _, plr in pairs(Players:GetPlayers()) do
             if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
@@ -260,16 +260,25 @@ end, function()
 end)
 
 -- Basic Noclip
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
 local noclip = {active = false}
+local loop
+
 addToggle("🌀 Noclip", noclip, function()
-noclip.loop = RunService.Stepped:Connect(function()
-local char = LocalPlayer.Character
-if char and char:FindFirstChildOfClass("Humanoid") then
-char:FindFirstChildOfClass("Humanoid"):ChangeState(11)
-end
-end)
+    loop = RunService.Stepped:Connect(function()
+        local char = LocalPlayer.Character
+        if char then
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if hum then
+                hum:ChangeState(11)  -- Estado 11 = Noclip (Physics)
+            end
+        end
+    end)
 end, function()
-if noclip.loop then noclip.loop:Disconnect() end
+    if loop then loop:Disconnect() end
 end)
 
 -- Kill Players
@@ -309,7 +318,6 @@ end)
 
 -- Godmode Anti-Daño
 local godMode = {active = false}
-
 addToggle("💊 Auto Heal", godMode, function()
     godMode.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
