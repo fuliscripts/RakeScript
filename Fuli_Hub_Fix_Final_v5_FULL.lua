@@ -308,13 +308,17 @@ local LocalPlayer = Players.LocalPlayer
 
 local hideDig = {active = false}
 local tunnel, tunnelHeight = nil, 10
+local originalAnchorState = false
 
-addToggle("🕳️ Hide Underground (Pro)", hideDig, function()
+addToggle("🕳️ Hide Underground (Fix PRO)", hideDig, function()
     local char = LocalPlayer.Character
     if not char or not char:FindFirstChild("HumanoidRootPart") then return end
     local hrp = char.HumanoidRootPart
 
-    -- Crear "túnel" invisible
+    -- Guardar estado original
+    originalAnchorState = hrp.Anchored
+
+    -- Crear túnel
     tunnel = Instance.new("Part")
     tunnel.Name = "FuliTunnel"
     tunnel.Size = Vector3.new(6, 1, 6)
@@ -324,7 +328,10 @@ addToggle("🕳️ Hide Underground (Pro)", hideDig, function()
     tunnel.CFrame = hrp.CFrame * CFrame.new(0, -tunnelHeight, 0)
     tunnel.Parent = workspace
 
-    -- Mover jugador bajo el túnel suavemente
+    -- Anclar personaje para evitar tambaleo
+    hrp.Anchored = true
+
+    -- Mover suavemente
     RunService:BindToRenderStep("FuliHide", Enum.RenderPriority.Character.Value, function()
         if hideDig.active and hrp then
             hrp.CFrame = CFrame.new(tunnel.Position + Vector3.new(0, 2, 0))
@@ -333,6 +340,16 @@ addToggle("🕳️ Hide Underground (Pro)", hideDig, function()
 end, function()
     hideDig.active = false
     RunService:UnbindFromRenderStep("FuliHide")
+
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        local hrp = char.HumanoidRootPart
+        -- Desanclar para que puedas moverte de nuevo
+        hrp.Anchored = originalAnchorState
+        -- Subir más alto para salir bien
+        hrp.CFrame = hrp.CFrame + Vector3.new(0, 50, 0)
+    end
+
     if tunnel then tunnel:Destroy() end
     tunnel = nil
 end)
