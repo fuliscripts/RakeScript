@@ -180,24 +180,35 @@ end, function()
 if stamina.loop then stamina.loop:Disconnect() end
 end)
 
--- No Fall Damage PRO 💖 by Seren para Fuli
+-- No Fall Damage ULTIMATE 💖 (Fuli Fix 100%)
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 local noFall = {active = false}
-addToggle("No Fall Damage PRO", noFall, function()
-    noFall.loop = RunService.Heartbeat:Connect(function()
-        local char = game.Players.LocalPlayer.Character
-        if char and char:FindFirstChild("HumanoidRootPart") then
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            if hum then
-                local yVelocity = char.HumanoidRootPart.Velocity.Y
-                -- Solo si va cayendo rápido (daño potencial), lo protegemos
-                if yVelocity < -30 then
-                    hum:ChangeState(Enum.HumanoidStateType.Landed)
-                end
+local connection
+
+addToggle("☁️ No Fall Damage", noFall, function()
+    connection = LocalPlayer.CharacterAdded:Connect(function(char)
+        local hum = char:WaitForChild("Humanoid")
+        hum.StateChanged:Connect(function(old, new)
+            if noFall.active and (new == Enum.HumanoidStateType.Freefall or new == Enum.HumanoidStateType.FallingDown) then
+                hum:ChangeState(Enum.HumanoidStateType.Landed)
             end
-        end
+        end)
     end)
+
+    -- Si ya tienes personaje:
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        local hum = LocalPlayer.Character.Humanoid
+        hum.StateChanged:Connect(function(old, new)
+            if noFall.active and (new == Enum.HumanoidStateType.Freefall or new == Enum.HumanoidStateType.FallingDown) then
+                hum:ChangeState(Enum.HumanoidStateType.Landed)
+            end
+        end)
+    end
 end, function()
-    if noFall.loop then noFall.loop:Disconnect() end
+    if connection then
+        connection:Disconnect()
+    end
 end)
 
 -- ESP Trampas y Scraps
