@@ -301,6 +301,33 @@ end, function()
     end
 end)
 
+-- Hide Underground
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local LocalPlayer = Players.LocalPlayer
+
+local hideUnderground = {active = false}
+local loop
+
+addToggle("🕳️ Hide Underground", hideUnderground, function()
+    loop = RunService.RenderStepped:Connect(function()
+        local char = LocalPlayer.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            -- Baja al personaje poco a poco para esconderse
+            char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame - Vector3.new(0, 1, 0)
+        end
+    end)
+end, function()
+    if loop then loop:Disconnect() end
+
+    -- Cuando apagues, vuelve a subir al jugador para salir
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame + Vector3.new(0, 50, 0)
+    end
+end)
+
 -- Kill Players
 local killPlayers = {active = false}
 addToggle("🔪 Kill Players", killPlayers, function()
