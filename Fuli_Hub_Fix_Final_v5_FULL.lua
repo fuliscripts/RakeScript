@@ -358,8 +358,8 @@ addToggle("💥 Fling Players", fling, function()
     loop = RunService.Heartbeat:Connect(function()
         for _, plr in pairs(Players:GetPlayers()) do
             if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-                -- Empuja al jugador hacia arriba
-                plr.Character.HumanoidRootPart.Velocity = Vector3.new(0, 300, 0)
+                -- Aplica una fuerza exagerada para lanzarlos lejos
+                plr.Character.HumanoidRootPart.Velocity = Vector3.new(0, 200, 0) -- Hacia arriba
             end
         end
     end)
