@@ -180,31 +180,24 @@ end, function()
 if stamina.loop then stamina.loop:Disconnect() end
 end)
 
--- No Fall Damage
+-- No Fall Damage PRO 💖 by Seren para Fuli
 local noFall = {active = false}
-addToggle("☁️ No Fall Damage", noFall, function()
+addToggle("No Fall Damage PRO", noFall, function()
     noFall.loop = RunService.Heartbeat:Connect(function()
-        local char = LocalPlayer.Character
-        if char then
+        local char = game.Players.LocalPlayer.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
             local hum = char:FindFirstChildOfClass("Humanoid")
             if hum then
-                -- Desactivar solo los estados que causan daño
-                hum:SetStateEnabled(Enum.HumanoidStateType.Freefall, false)
-                hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+                local yVelocity = char.HumanoidRootPart.Velocity.Y
+                -- Solo si va cayendo rápido (daño potencial), lo protegemos
+                if yVelocity < -30 then
+                    hum:ChangeState(Enum.HumanoidStateType.Landed)
+                end
             end
         end
     end)
 end, function()
     if noFall.loop then noFall.loop:Disconnect() end
-    -- Al apagar, volver todo a normal
-    local char = LocalPlayer.Character
-    if char then
-        local hum = char:FindFirstChildOfClass("Humanoid")
-        if hum then
-            hum:SetStateEnabled(Enum.HumanoidStateType.Freefall, true)
-            hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
-        end
-    end
 end)
 
 -- ESP Trampas y Scraps
