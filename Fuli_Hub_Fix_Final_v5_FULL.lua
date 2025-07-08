@@ -180,27 +180,36 @@ end, function()
 if stamina.loop then stamina.loop:Disconnect() end
 end)
 
--- Fuli No Fall Damage (Estilo Video Real) 💖 100% para The Rake: Remastered
+-- Fuli No Fall Damage (Video Style) 💖 Con Toggle
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
--- Hook al metatable
-local mt = getrawmetatable(game)
-setreadonly(mt, false)
-local oldNamecall = mt.__namecall
+local noFall = {active = false}
+local hooked = false
+local oldNamecall
 
-mt.__namecall = newcclosure(function(self, ...)
-    local args = {...}
-    local method = getnamecallmethod()
+addToggle("No Fall Damage", noFall, function()
+    if not hooked then
+        local mt = getrawmetatable(game)
+        setreadonly(mt, false)
+        oldNamecall = mt.__namecall
 
-    -- Filtra los FireServer relacionados con daño
-    if method == "FireServer" and tostring(self):lower():find("damage") then
-        -- Bloquea el daño (incluye daño por caída)
-        return
+        mt.__namecall = newcclosure(function(self, ...)
+            local args = {...}
+            local method = getnamecallmethod()
+
+            if noFall.active and method == "FireServer" and tostring(self):lower():find("damage") then
+                return -- Bloquea daño por caída y cualquier otro daño que use FireServer con "damage"
+            end
+
+            return oldNamecall(self, unpack(args))
+        end)
+
+        hooked = true
     end
-
-    return oldNamecall(self, unpack(args))
+end, function()
+    -- Desactivación: solo apaga la protección, pero el hook queda listo por si se reactiva
 end)
 
 -- ESP Players + Rake + HP
