@@ -316,7 +316,7 @@ end)
 -- Godmode Anti-Daño
 local godMode = {active = false}
 
-addToggle("🏥 Auto Heal", godMode, function()
+addToggle("💊 Auto Heal", godMode, function()
     godMode.loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if char then
