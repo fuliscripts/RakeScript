@@ -107,7 +107,7 @@ end)
 
 -- StunStick Aura
 local aura = {active = false}
-addToggle("🪄 StunStick Aura", aura, function()
+addToggle("🪈 StunStick Aura", aura, function()
 aura.loop = RunService.RenderStepped:Connect(function()
 local char = LocalPlayer.Character
 if char and char:FindFirstChild("HumanoidRootPart") then
