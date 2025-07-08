@@ -238,42 +238,57 @@ local LocalPlayer = Players.LocalPlayer
 local espItems = {active = false}
 local loop
 
-addToggle("🔎 ESP Trampas y Chatarras", espItems, function()
+addToggle("🔎 ESP Scraps + Tramps (Real-Time)", espItems, function()
     loop = RunService.RenderStepped:Connect(function()
         for _, obj in pairs(Workspace:GetDescendants()) do
             local isTarget = false
-            local pos = nil
+            local targetPart = nil
 
-            -- Detectar partes o modelos
-            if obj:IsA("Part") and (obj.Name:lower():find("trap") or obj.Name:lower():find("scrap")) then
+            -- Verificar si es Scrap o Trampa
+            if obj:IsA("Part") and (
+                obj.Name:lower():find("scrap") or
+                obj.Name:lower():find("trap") or
+                obj.Name:lower():find("rusty tramp") or
+                obj.Name:lower():find("bear trap")
+            ) then
                 isTarget = true
-                pos = obj.Position
-            elseif obj:IsA("Model") and (obj.Name:lower():find("trap") or obj.Name:lower():find("scrap")) then
+                targetPart = obj
+            elseif obj:IsA("Model") and (
+                obj.Name:lower():find("scrap") or
+                obj.Name:lower():find("trap") or
+                obj.Name:lower():find("rusty tramp") or
+                obj.Name:lower():find("bear trap")
+            ) then
                 local primary = obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")
                 if primary then
                     isTarget = true
-                    pos = primary.Position
+                    targetPart = primary
                 end
             end
 
-            if isTarget and pos then
-                local distance = math.floor((pos - Camera.CFrame.Position).Magnitude)
+            if isTarget and targetPart then
+                local distance = math.floor((targetPart.Position - Camera.CFrame.Position).Magnitude)
 
-                -- Crear ESP si no existe
-                if not obj:FindFirstChild("FuliESP_Item") then
-                    local bill = Instance.new("BillboardGui", obj:IsA("Model") and (obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")) or obj)
+                local existingESP = targetPart:FindFirstChild("FuliESP_Item")
+                if not existingESP then
+                    local bill = Instance.new("BillboardGui", targetPart)
                     bill.Name = "FuliESP_Item"
                     bill.Size = UDim2.new(0, 100, 0, 40)
                     bill.AlwaysOnTop = true
 
                     local text = Instance.new("TextLabel", bill)
+                    text.Name = "ESPText"
                     text.Size = UDim2.new(1, 0, 1, 0)
                     text.BackgroundTransparency = 1
-                    text.TextColor3 = Color3.new(1, 1, 0)
+                    text.TextColor3 = Color3.new(0, 1, 1)
                     text.TextScaled = true
                     text.Text = obj.Name .. " [" .. distance .. "m]"
                 else
-                    obj.FuliESP_Item.TextLabel.Text = obj.Name .. " [" .. distance .. "m]"
+                    -- Actualizar texto y distancia en tiempo real
+                    local text = existingESP:FindFirstChild("ESPText")
+                    if text then
+                        text.Text = obj.Name .. " [" .. distance .. "m]"
+                    end
                 end
             end
         end
@@ -281,8 +296,9 @@ addToggle("🔎 ESP Trampas y Chatarras", espItems, function()
 end, function()
     if loop then loop:Disconnect() end
     for _, obj in pairs(Workspace:GetDescendants()) do
-        if obj:FindFirstChild("FuliESP_Item") then
-            obj.FuliESP_Item:Destroy()
+        if obj:IsA("Part") or obj:IsA("Model") then
+            local gui = obj:FindFirstChild("FuliESP_Item")
+            if gui then gui:Destroy() end
         end
     end
 end)
