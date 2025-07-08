@@ -180,44 +180,26 @@ end, function()
 if stamina.loop then stamina.loop:Disconnect() end
 end)
 
--- No Fall Damage Universal 💖 By Seren para Fuli
+-- No Fall Damage (Auto-Heal Instantáneo 💖)
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 
 local noFall = {active = false}
-local heartbeatConnection
-local charAddedConnection
+local loop
 
 addToggle("☁️ No Fall Damage", noFall, function()
-    local function applyNoFall(char)
-        local hum = char:WaitForChild("Humanoid")
-        heartbeatConnection = RunService.Heartbeat:Connect(function()
-            if noFall.active and char:FindFirstChild("HumanoidRootPart") then
-                -- Método 1: Resetear velocidad Y (para Natural Disaster)
-                char.HumanoidRootPart.Velocity = Vector3.new(
-                    char.HumanoidRootPart.Velocity.X,
-                    math.max(char.HumanoidRootPart.Velocity.Y, -25),  -- Nunca dejar caer demasiado rápido
-                    char.HumanoidRootPart.Velocity.Z
-                )
-                -- Método 2: Bloquear estados (para The Rake)
-                if hum:GetState() == Enum.HumanoidStateType.Freefall or hum:GetState() == Enum.HumanoidStateType.FallingDown then
-                    hum:ChangeState(Enum.HumanoidStateType.Running)
-                end
+    loop = RunService.Heartbeat:Connect(function()
+        local char = LocalPlayer.Character
+        if char then
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if hum and hum.Health < hum.MaxHealth then
+                hum.Health = hum.MaxHealth
             end
-        end)
-    end
-
-    if LocalPlayer.Character then
-        applyNoFall(LocalPlayer.Character)
-    end
-
-    charAddedConnection = LocalPlayer.CharacterAdded:Connect(function(char)
-        applyNoFall(char)
+        end
     end)
 end, function()
-    if heartbeatConnection then heartbeatConnection:Disconnect() end
-    if charAddedConnection then charAddedConnection:Disconnect() end
+    if loop then loop:Disconnect() end
 end)
 
 -- ESP Trampas y Scraps
