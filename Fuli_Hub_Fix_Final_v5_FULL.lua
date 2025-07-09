@@ -203,7 +203,7 @@ local powerTimeHUD = {active = false}
 local screenGui, powerLabel, timeLabel
 local loop
 
-addToggle("🧭 Power & Time HUD (Fix)", powerTimeHUD, function()
+addToggle("🧭 Power + Time (Fix)", powerTimeHUD, function()
     -- Crear GUI si no existe
     if not screenGui then
         screenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
