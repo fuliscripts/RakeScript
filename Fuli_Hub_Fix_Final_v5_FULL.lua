@@ -447,30 +447,34 @@ local LocalPlayer = Players.LocalPlayer
 
 local hideUnderground = {active = false}
 local loop
-local originalAnchorState = false
+local originalCFrame
 
-addToggle("🕳️ Hide Underground (Fix Real)", hideUnderground, function()
-    loop = RunService.RenderStepped:Connect(function()
-        local char = LocalPlayer.Character
-        if char and char:FindFirstChild("HumanoidRootPart") then
-            local hrp = char.HumanoidRootPart
+-- Define una posición segura debajo del mapa (ajusta si quieres)
+local undergroundPosition = Vector3.new(0, -50, 0)  
 
-            -- Guardar estado original de Anchored
-            originalAnchorState = hrp.Anchored
-
-            -- Esconder bajo tierra de verdad
-            hrp.CFrame = CFrame.new(hrp.Position.X, -20, hrp.Position.Z)
-            hrp.Anchored = true
-        end
-    end)
-end, function()
-    if loop then loop:Disconnect() end
-
+addToggle("🕳️ Hide Underground (100% Real)", hideUnderground, function()
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") then
         local hrp = char.HumanoidRootPart
-        hrp.Anchored = originalAnchorState
-        hrp.CFrame = hrp.CFrame + Vector3.new(0, 30, 0) -- Te sube de regreso
+
+        -- Guardar posición original para volver después
+        originalCFrame = hrp.CFrame
+
+        -- Teleport real bajo el mapa
+        hrp.CFrame = CFrame.new(undergroundPosition)
+        hrp.Anchored = true
+    end
+end, function()
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        local hrp = char.HumanoidRootPart
+
+        -- Volver a la posición original
+        if originalCFrame then
+            hrp.CFrame = originalCFrame + Vector3.new(0, 10, 0) -- Sube 10 studs para no caer
+        end
+
+        hrp.Anchored = false
     end
 end)
 
