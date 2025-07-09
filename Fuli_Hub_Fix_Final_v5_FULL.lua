@@ -442,27 +442,47 @@ end)
 
 -- Hide Underground 
 local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
 local LocalPlayer = Players.LocalPlayer
-
-local stuckUnderMap = {active = false}
+local stuckFalling = {active = false}
 local savedCFrame
+local loop
 
-addToggle("🕳️ Stuck Under Map (Y = -10)", stuckUnderMap, function()
+addToggle("🕳️ Stuck Falling (Exact Like Red)", stuckFalling, function()
     local char = LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") then
+    if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChildOfClass("Humanoid") then
         local hrp = char.HumanoidRootPart
+        local hum = char:FindFirstChildOfClass("Humanoid")
 
-        -- Guardar posición original
         savedCFrame = hrp.CFrame
 
-        -- Teleport exacto a Y = -10
+        -- Teleport exactamente a Y = -10
         hrp.CFrame = CFrame.new(hrp.Position.X, -10, hrp.Position.Z)
+
+        -- Anclar para que no caiga
+        hrp.Anchored = true
+
+        -- Forzar caída visual cada frame
+        loop = RunService.RenderStepped:Connect(function()
+            if hum then
+                hum:ChangeState(Enum.HumanoidStateType.Freefall)
+            end
+        end)
     end
 end, function()
+    if loop then loop:Disconnect() end
+
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") and savedCFrame then
-        -- Volver arriba sin caer
-        char.HumanoidRootPart.CFrame = savedCFrame + Vector3.new(0, 10, 0)
+        local hrp = char.HumanoidRootPart
+        hrp.CFrame = savedCFrame + Vector3.new(0, 10, 0)
+        hrp.Anchored = false
+
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum then
+            hum:ChangeState(Enum.HumanoidStateType.Running)
+        end
     end
 end)
 
