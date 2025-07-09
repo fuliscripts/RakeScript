@@ -1,5 +1,5 @@
 
--- FULI HUB - Fix Final v5 + Nuevas Funciones (Con Escudo Permanente 🛡️)
+-- FULI HUB - Fix Final v5 + Nuevas Funciones
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
