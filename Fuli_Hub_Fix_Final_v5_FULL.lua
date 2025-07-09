@@ -191,6 +191,71 @@ end, function()
 if stamina.loop then stamina.loop:Disconnect() end
 end)
 
+-- Power and Time
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
+
+local LocalPlayer = Players.LocalPlayer
+
+local powerTimeDisplay = {active = false}
+local screenGui, powerLabel, timeLabel
+local loop
+
+addToggle("🧭 Power + Time", powerTimeDisplay, function()
+    -- Crear GUI si no existe
+    if not screenGui then
+        screenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
+        screenGui.Name = "FuliPowerTimeHUD"
+
+        powerLabel = Instance.new("TextLabel", screenGui)
+        powerLabel.Size = UDim2.new(0, 200, 0, 30)
+        powerLabel.Position = UDim2.new(0, 10, 0, 10)
+        powerLabel.BackgroundTransparency = 0.3
+        powerLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+        powerLabel.TextColor3 = Color3.new(1, 1, 0) -- Amarillo
+        powerLabel.TextScaled = true
+        powerLabel.Text = "Power: ..."
+
+        timeLabel = Instance.new("TextLabel", screenGui)
+        timeLabel.Size = UDim2.new(0, 200, 0, 30)
+        timeLabel.Position = UDim2.new(0, 10, 0, 50)
+        timeLabel.BackgroundTransparency = 0.3
+        timeLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+        timeLabel.TextColor3 = Color3.new(0, 1, 1) -- Azul claro
+        timeLabel.TextScaled = true
+        timeLabel.Text = "Time: ..."
+    end
+
+    -- Loop para actualizar los valores
+    loop = RunService.RenderStepped:Connect(function()
+        -- Buscar valor de Power
+        local power = ReplicatedStorage:FindFirstChild("Power") or Workspace:FindFirstChild("Power") or Workspace:FindFirstChild("PowerAmount")
+        if power and power:IsA("NumberValue") then
+            powerLabel.Text = "Power: " .. tostring(power.Value)
+        else
+            powerLabel.Text = "Power: Not Found"
+        end
+
+        -- Buscar valor de Time
+        local clock = Workspace:FindFirstChild("ClockTime") or ReplicatedStorage:FindFirstChild("ClockTime")
+        if clock and clock:IsA("NumberValue") then
+            local hours = math.floor(clock.Value)
+            local minutes = math.floor((clock.Value % 1) * 60)
+            timeLabel.Text = string.format("Time: %02d:%02d", hours, minutes)
+        else
+            timeLabel.Text = "Time: Not Found"
+        end
+    end)
+end, function()
+    if loop then loop:Disconnect() end
+    if screenGui then
+        screenGui:Destroy()
+        screenGui = nil
+    end
+end)
+
 -- No Fall Damage
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
