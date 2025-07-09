@@ -446,7 +446,7 @@ local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 
 local hideDig = {active = false}
-local tunnel, tunnelHeight = nil, 15  -- MÁS ABAJO (antes estaba en 10)
+local tunnel, tunnelHeight = nil, 50  -- MÁS ABAJO (antes estaba en 10)
 local originalAnchorState = false
 
 addToggle("🕳️ Hide Underground", hideDig, function()
@@ -480,7 +480,7 @@ end, function()
     if char and char:FindFirstChild("HumanoidRootPart") then
         local hrp = char.HumanoidRootPart
         hrp.Anchored = originalAnchorState
-        hrp.CFrame = hrp.CFrame + Vector3.new(0, 15, 0)  -- SUBIDA MÁS CORTA (antes +50)
+        hrp.CFrame = hrp.CFrame + Vector3.new(0, 50, 0)  -- SUBIDA MÁS CORTA (antes +50)
     end
 
     if tunnel then tunnel:Destroy() end
