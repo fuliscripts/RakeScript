@@ -448,7 +448,7 @@ local hideStuck = {active = false}
 local savedCFrame
 local originalAnchorState
 
-addToggle("🕳️ Stuck Under Map", hideStuck, function()
+addToggle("🕳️ Hide Underground", hideStuck, function()
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") then
         local hrp = char.HumanoidRootPart
