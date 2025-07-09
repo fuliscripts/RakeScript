@@ -442,43 +442,40 @@ end)
 
 -- Hide Underground 
 local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
 
+local LocalPlayer = Players.LocalPlayer
 local stuckFall = {active = false}
 local savedCFrame
-local originalAnchorState
+local loop
 
-addToggle("🕳️ Stuck Falling Under Map", stuckFall, function()
+addToggle("🕳️ Stuck Falling Animation (Real)", stuckFall, function()
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChildOfClass("Humanoid") then
         local hrp = char.HumanoidRootPart
         local hum = char:FindFirstChildOfClass("Humanoid")
 
-        -- Guardar estado
         savedCFrame = hrp.CFrame
-        originalAnchorState = hrp.Anchored
 
-        -- Teleport abajo y atascado
+        -- Teleport profundo
         hrp.CFrame = CFrame.new(hrp.Position.X, -100, hrp.Position.Z)
-        hrp.Anchored = true
 
-        -- Forzar animación de caída
-        hum:ChangeState(Enum.HumanoidStateType.Freefall)
+        loop = RunService.RenderStepped:Connect(function()
+            if char and hrp and hum then
+                -- Mantener la posición fija
+                hrp.CFrame = CFrame.new(hrp.Position.X, -100, hrp.Position.Z)
+
+                -- Forzar estado de caída cada frame
+                hum:ChangeState(Enum.HumanoidStateType.Freefall)
+            end
+        end)
     end
 end, function()
+    if loop then loop:Disconnect() end
+
     local char = LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChildOfClass("Humanoid") then
-        local hrp = char.HumanoidRootPart
-        local hum = char:FindFirstChildOfClass("Humanoid")
-
-        -- Volver arriba y restaurar
-        if savedCFrame then
-            hrp.CFrame = savedCFrame + Vector3.new(0, 10, 0)
-        end
-        hrp.Anchored = originalAnchorState
-
-        -- Regresar a estado normal
-        hum:ChangeState(Enum.HumanoidStateType.Running)
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        char.HumanoidRootPart.CFrame = savedCFrame + Vector3.new(0, 10, 0)
     end
 end)
 
