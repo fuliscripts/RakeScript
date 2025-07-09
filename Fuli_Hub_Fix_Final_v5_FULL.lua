@@ -449,7 +449,7 @@ local hideFalling = {active = false}
 local loop
 local savedCFrame
 
-addToggle("🕳️ Fake Fall Under Map", hideFalling, function()
+addToggle("🕳️ Fake Fall", hideFalling, function()
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") then
         local hrp = char.HumanoidRootPart
