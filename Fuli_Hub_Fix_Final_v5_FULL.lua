@@ -442,38 +442,35 @@ end)
 
 -- Hide Underground 
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-
 local LocalPlayer = Players.LocalPlayer
-local hideFalling = {active = false}
-local loop
-local savedCFrame
 
-addToggle("🕳️ Fake Fall", hideFalling, function()
+local hideStuck = {active = false}
+local savedCFrame
+local originalAnchorState
+
+addToggle("🕳️ Stuck Under Map", hideStuck, function()
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") then
         local hrp = char.HumanoidRootPart
 
-        -- Guardar la posición actual
+        -- Guardar la posición y estado original
         savedCFrame = hrp.CFrame
+        originalAnchorState = hrp.Anchored
 
-        -- Mover al jugador a una zona segura bajo el mapa
+        -- Teleport abajo y quedarse atascado
         hrp.CFrame = CFrame.new(hrp.Position.X, -100, hrp.Position.Z)
-
-        -- Loop para simular caída infinita
-        loop = RunService.RenderStepped:Connect(function()
-            if char and char:FindFirstChild("HumanoidRootPart") then
-                hrp.CFrame = hrp.CFrame * CFrame.new(0, -0.5, 0) -- Baja lentamente
-            end
-        end)
+        hrp.Anchored = true
     end
 end, function()
-    if loop then loop:Disconnect() end
-
     local char = LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") and savedCFrame then
-        -- Volver a la posición original
-        char.HumanoidRootPart.CFrame = savedCFrame + Vector3.new(0, 10, 0)
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        local hrp = char.HumanoidRootPart
+
+        -- Volver arriba y restaurar Anchored
+        if savedCFrame then
+            hrp.CFrame = savedCFrame + Vector3.new(0, 10, 0)
+        end
+        hrp.Anchored = originalAnchorState
     end
 end)
 
