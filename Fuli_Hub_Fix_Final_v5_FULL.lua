@@ -448,7 +448,7 @@ local stuckFall = {active = false}
 local savedCFrame
 local originalAnchorState
 
-addToggle("🕳️ Stuck Falling Under Map (Real Pose)", stuckFall, function()
+addToggle("🕳️ Stuck Falling Under Map", stuckFall, function()
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChildOfClass("Humanoid") then
         local hrp = char.HumanoidRootPart
