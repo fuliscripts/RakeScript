@@ -193,17 +193,17 @@ end)
 
 -- Power and Time
 local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local LocalPlayer = Players.LocalPlayer
 
-local powerTimeDisplay = {active = false}
+local powerTimeHUD = {active = false}
 local screenGui, powerLabel, timeLabel
 local loop
 
-addToggle("🧭 Power + Time", powerTimeDisplay, function()
+addToggle("🧭 Power & Time HUD (Fix)", powerTimeHUD, function()
     -- Crear GUI si no existe
     if not screenGui then
         screenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
@@ -223,27 +223,37 @@ addToggle("🧭 Power + Time", powerTimeDisplay, function()
         timeLabel.Position = UDim2.new(0, 10, 0, 50)
         timeLabel.BackgroundTransparency = 0.3
         timeLabel.BackgroundColor3 = Color3.new(0, 0, 0)
-        timeLabel.TextColor3 = Color3.new(0, 1, 1) -- Azul claro
+        timeLabel.TextColor3 = Color3.new(0, 1, 1) -- Azul
         timeLabel.TextScaled = true
         timeLabel.Text = "Time: ..."
     end
 
-    -- Loop para actualizar los valores
+    -- Loop para actualizar valores
     loop = RunService.RenderStepped:Connect(function()
-        -- Buscar valor de Power
-        local power = ReplicatedStorage:FindFirstChild("Power") or Workspace:FindFirstChild("Power") or Workspace:FindFirstChild("PowerAmount")
-        if power and power:IsA("NumberValue") then
-            powerLabel.Text = "Power: " .. tostring(power.Value)
+        -- Buscar Power Level
+        local powerObject = Workspace:FindFirstChild("Power Level") or ReplicatedStorage:FindFirstChild("Power Level")
+        if powerObject then
+            if powerObject:IsA("NumberValue") then
+                powerLabel.Text = "Power: " .. tostring(powerObject.Value)
+            elseif powerObject:IsA("TextLabel") then
+                powerLabel.Text = "Power: " .. tostring(powerObject.Text)
+            else
+                powerLabel.Text = "Power: (No compatible)"
+            end
         else
             powerLabel.Text = "Power: Not Found"
         end
 
-        -- Buscar valor de Time
-        local clock = Workspace:FindFirstChild("ClockTime") or ReplicatedStorage:FindFirstChild("ClockTime")
-        if clock and clock:IsA("NumberValue") then
-            local hours = math.floor(clock.Value)
-            local minutes = math.floor((clock.Value % 1) * 60)
-            timeLabel.Text = string.format("Time: %02d:%02d", hours, minutes)
+        -- Buscar Time Remaining
+        local timeObject = Workspace:FindFirstChild("Time Remaining") or ReplicatedStorage:FindFirstChild("Time Remaining")
+        if timeObject then
+            if timeObject:IsA("NumberValue") then
+                timeLabel.Text = "Time: " .. tostring(timeObject.Value)
+            elseif timeObject:IsA("TextLabel") then
+                timeLabel.Text = "Time: " .. tostring(timeObject.Text)
+            else
+                timeLabel.Text = "Time: (No compatible)"
+            end
         else
             timeLabel.Text = "Time: Not Found"
         end
