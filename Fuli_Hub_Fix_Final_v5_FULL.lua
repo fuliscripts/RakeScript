@@ -529,7 +529,7 @@ local LocalPlayer = Players.LocalPlayer
 local antiTrap = {active = false}
 local loop
 
-addToggle("🛡️ Inmunidad Total a Trampas", antiTrap, function()
+addToggle("🛡️ Anti Tramps", antiTrap, function()
     loop = RunService.RenderStepped:Connect(function()
         for _, obj in pairs(Workspace:GetDescendants()) do
             -- Verificar si es un Part o un Model que parece trampa
