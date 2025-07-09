@@ -486,6 +486,37 @@ end, function()
     end
 end)
 
+-- Noclip
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+local noclip = {active = false}
+local loop
+
+addToggle("🌀 Noclip", noclip, function()
+    loop = RunService.Stepped:Connect(function()
+        local char = LocalPlayer.Character
+        if char then
+            for _, part in pairs(char:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+        end
+    end)
+end, function()
+    if loop then loop:Disconnect() end
+    local char = LocalPlayer.Character
+    if char then
+        for _, part in pairs(char:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = true
+            end
+        end
+    end
+end)
+
 -- Kill Players
 local killPlayers = {active = false}
 addToggle("🔪 Kill Players", killPlayers, function()
