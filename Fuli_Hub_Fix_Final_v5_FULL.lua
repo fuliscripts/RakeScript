@@ -203,9 +203,9 @@ local screenGui, powerLabel, timeLabel
 local loop
 
 -- Ajusta aquí el Power Máximo real del juego (ejemplo: 1560)
-local maxPower = 1560
+local maxPower = 100
 
-addToggle("🧭 Power + Time HUD", powerTimeHUD, function()
+addToggle("🧭 Power + Time", powerTimeHUD, function()
     if not screenGui then
         screenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
         screenGui.Name = "FuliPowerTimeHUD"
