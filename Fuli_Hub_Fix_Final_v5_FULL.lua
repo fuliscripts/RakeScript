@@ -452,7 +452,7 @@ local originalCFrame
 -- Define una posición segura debajo del mapa (ajusta si quieres)
 local undergroundPosition = Vector3.new(0, -50, 0)  
 
-addToggle("🕳️ Hide Underground (100% Real)", hideUnderground, function()
+addToggle("🕳️ Hide Underground", hideUnderground, function()
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") then
         local hrp = char.HumanoidRootPart
