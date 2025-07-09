@@ -193,17 +193,16 @@ end)
 
 -- Power and Time
 local Players = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
 local powerTimeHUD = {active = false}
 local screenGui, powerLabel, timeLabel
 local loop
 
-addToggle("🧭 Power + Time (Fix)", powerTimeHUD, function()
+addToggle("🧭 Power + Time (Final)", powerTimeHUD, function()
     -- Crear GUI si no existe
     if not screenGui then
         screenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
@@ -214,7 +213,7 @@ addToggle("🧭 Power + Time (Fix)", powerTimeHUD, function()
         powerLabel.Position = UDim2.new(0, 10, 0, 10)
         powerLabel.BackgroundTransparency = 0.3
         powerLabel.BackgroundColor3 = Color3.new(0, 0, 0)
-        powerLabel.TextColor3 = Color3.new(1, 1, 0) -- Amarillo
+        powerLabel.TextColor3 = Color3.new(1, 1, 0)
         powerLabel.TextScaled = true
         powerLabel.Text = "Power: ..."
 
@@ -223,40 +222,32 @@ addToggle("🧭 Power + Time (Fix)", powerTimeHUD, function()
         timeLabel.Position = UDim2.new(0, 10, 0, 50)
         timeLabel.BackgroundTransparency = 0.3
         timeLabel.BackgroundColor3 = Color3.new(0, 0, 0)
-        timeLabel.TextColor3 = Color3.new(0, 1, 1) -- Azul
+        timeLabel.TextColor3 = Color3.new(0, 1, 1)
         timeLabel.TextScaled = true
         timeLabel.Text = "Time: ..."
     end
 
-    -- Loop para actualizar valores
     loop = RunService.RenderStepped:Connect(function()
-        -- Buscar Power Level
-        local powerObject = Workspace:FindFirstChild("Power Level") or ReplicatedStorage:FindFirstChild("Power Level")
-        if powerObject then
-            if powerObject:IsA("NumberValue") then
-                powerLabel.Text = "Power: " .. tostring(powerObject.Value)
-            elseif powerObject:IsA("TextLabel") then
-                powerLabel.Text = "Power: " .. tostring(powerObject.Text)
-            else
-                powerLabel.Text = "Power: (No compatible)"
+        local powerText = nil
+        local timeText = nil
+
+        -- Buscar dentro de PlayerGui
+        for _, gui in pairs(PlayerGui:GetChildren()) do
+            if gui:IsA("ScreenGui") then
+                for _, element in pairs(gui:GetDescendants()) do
+                    if element:IsA("TextLabel") then
+                        if element.Text:lower():find("power left") then
+                            powerText = element.Text
+                        elseif element.Text:lower():find("game%-time") then  -- el guión se escapa con %
+                            timeText = element.Text
+                        end
+                    end
+                end
             end
-        else
-            powerLabel.Text = "Power: Not Found"
         end
 
-        -- Buscar Time Remaining
-        local timeObject = Workspace:FindFirstChild("Time Remaining") or ReplicatedStorage:FindFirstChild("Time Remaining")
-        if timeObject then
-            if timeObject:IsA("NumberValue") then
-                timeLabel.Text = "Time: " .. tostring(timeObject.Value)
-            elseif timeObject:IsA("TextLabel") then
-                timeLabel.Text = "Time: " .. tostring(timeObject.Text)
-            else
-                timeLabel.Text = "Time: (No compatible)"
-            end
-        else
-            timeLabel.Text = "Time: Not Found"
-        end
+        powerLabel.Text = "Power: " .. (powerText or "Not Found")
+        timeLabel.Text = "Time: " .. (timeText or "Not Found")
     end)
 end, function()
     if loop then loop:Disconnect() end
