@@ -444,33 +444,41 @@ end)
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
-local hideStuck = {active = false}
+local stuckFall = {active = false}
 local savedCFrame
 local originalAnchorState
 
-addToggle("🕳️ Hide Underground", hideStuck, function()
+addToggle("🕳️ Stuck Falling Under Map (Real Pose)", stuckFall, function()
     local char = LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") then
+    if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChildOfClass("Humanoid") then
         local hrp = char.HumanoidRootPart
+        local hum = char:FindFirstChildOfClass("Humanoid")
 
-        -- Guardar la posición y estado original
+        -- Guardar estado
         savedCFrame = hrp.CFrame
         originalAnchorState = hrp.Anchored
 
-        -- Teleport abajo y quedarse atascado
+        -- Teleport abajo y atascado
         hrp.CFrame = CFrame.new(hrp.Position.X, -100, hrp.Position.Z)
         hrp.Anchored = true
+
+        -- Forzar animación de caída
+        hum:ChangeState(Enum.HumanoidStateType.Freefall)
     end
 end, function()
     local char = LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") then
+    if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChildOfClass("Humanoid") then
         local hrp = char.HumanoidRootPart
+        local hum = char:FindFirstChildOfClass("Humanoid")
 
-        -- Volver arriba y restaurar Anchored
+        -- Volver arriba y restaurar
         if savedCFrame then
             hrp.CFrame = savedCFrame + Vector3.new(0, 10, 0)
         end
         hrp.Anchored = originalAnchorState
+
+        -- Regresar a estado normal
+        hum:ChangeState(Enum.HumanoidStateType.Running)
     end
 end)
 
