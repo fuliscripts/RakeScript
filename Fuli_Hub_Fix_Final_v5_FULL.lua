@@ -443,46 +443,49 @@ end)
 -- Hide Underground 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
 
 local LocalPlayer = Players.LocalPlayer
-local stuckFalling = {active = false}
+local stuckHide = {active = false}
 local savedCFrame
-local loop
+local baseplate
 
-addToggle("🕳️ Stuck Falling", stuckFalling, function()
+addToggle("🕳️ Hide Underground PRO (Base + Teleport)", stuckHide, function()
     local char = LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChildOfClass("Humanoid") then
-        local hrp = char.HumanoidRootPart
-        local hum = char:FindFirstChildOfClass("Humanoid")
+    if not char then return end
 
-        savedCFrame = hrp.CFrame
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if not hrp or not hum then return end
 
-        -- Teleport exactamente a Y = -10
-        hrp.CFrame = CFrame.new(hrp.Position.X, -10, hrp.Position.Z)
+    -- Guardar la posición original
+    savedCFrame = hrp.CFrame
 
-        -- Anclar para que no caiga
-        hrp.Anchored = true
+    -- Teleport a posición bajo tierra (Y = -20)
+    local targetPos = Vector3.new(hrp.Position.X, -20, hrp.Position.Z)
+    hrp.CFrame = CFrame.new(targetPos)
 
-        -- Forzar caída visual cada frame
-        loop = RunService.RenderStepped:Connect(function()
-            if hum then
-                hum:ChangeState(Enum.HumanoidStateType.Freefall)
-            end
-        end)
-    end
+    -- Crear base invisible para atascarse
+    baseplate = Instance.new("Part")
+    baseplate.Size = Vector3.new(10, 1, 10)
+    baseplate.Position = Vector3.new(targetPos.X, targetPos.Y - 1, targetPos.Z)
+    baseplate.Anchored = true
+    baseplate.CanCollide = true
+    baseplate.Transparency = 1
+    baseplate.Parent = Workspace
+
+    -- Opcional: animación de caída
+    hum:ChangeState(Enum.HumanoidStateType.Freefall)
 end, function()
-    if loop then loop:Disconnect() end
-
+    -- Volver arriba y eliminar base
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") and savedCFrame then
-        local hrp = char.HumanoidRootPart
-        hrp.CFrame = savedCFrame + Vector3.new(0, 10, 0)
-        hrp.Anchored = false
+        char.HumanoidRootPart.CFrame = savedCFrame + Vector3.new(0, 10, 0)
+    end
 
-        local hum = char:FindFirstChildOfClass("Humanoid")
-        if hum then
-            hum:ChangeState(Enum.HumanoidStateType.Running)
-        end
+    if baseplate then
+        baseplate:Destroy()
+        baseplate = nil
     end
 end)
 
