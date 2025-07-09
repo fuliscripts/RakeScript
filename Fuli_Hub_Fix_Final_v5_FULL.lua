@@ -202,8 +202,10 @@ local powerTimeHUD = {active = false}
 local screenGui, powerLabel, timeLabel
 local loop
 
-addToggle("🧭 Power + Time (Final)", powerTimeHUD, function()
-    -- Crear GUI si no existe
+-- Ajusta aquí el Power Máximo real del juego (ejemplo: 1560)
+local maxPower = 1560
+
+addToggle("🧭 Power + Time HUD", powerTimeHUD, function()
     if not screenGui then
         screenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
         screenGui.Name = "FuliPowerTimeHUD"
@@ -213,7 +215,7 @@ addToggle("🧭 Power + Time (Final)", powerTimeHUD, function()
         powerLabel.Position = UDim2.new(0, 10, 0, 10)
         powerLabel.BackgroundTransparency = 0.3
         powerLabel.BackgroundColor3 = Color3.new(0, 0, 0)
-        powerLabel.TextColor3 = Color3.new(1, 1, 0)
+        powerLabel.TextColor3 = Color3.new(1, 1, 0) -- Amarillo
         powerLabel.TextScaled = true
         powerLabel.Text = "Power: ..."
 
@@ -222,32 +224,38 @@ addToggle("🧭 Power + Time (Final)", powerTimeHUD, function()
         timeLabel.Position = UDim2.new(0, 10, 0, 50)
         timeLabel.BackgroundTransparency = 0.3
         timeLabel.BackgroundColor3 = Color3.new(0, 0, 0)
-        timeLabel.TextColor3 = Color3.new(0, 1, 1)
+        timeLabel.TextColor3 = Color3.new(0, 1, 1) -- Azul
         timeLabel.TextScaled = true
         timeLabel.Text = "Time: ..."
     end
 
     loop = RunService.RenderStepped:Connect(function()
-        local powerText = nil
-        local timeText = nil
+        local powerValue, timeValue
 
-        -- Buscar dentro de PlayerGui
         for _, gui in pairs(PlayerGui:GetChildren()) do
             if gui:IsA("ScreenGui") then
                 for _, element in pairs(gui:GetDescendants()) do
                     if element:IsA("TextLabel") then
-                        if element.Text:lower():find("power left") then
-                            powerText = element.Text
-                        elseif element.Text:lower():find("game%-time") then  -- el guión se escapa con %
-                            timeText = element.Text
+                        if element.Text:lower():find("power station level") then
+                            powerValue = tonumber(element.Text:match("%d+"))
+                        elseif element.Text:lower():find("time left") then
+                            timeValue = element.Text
                         end
                     end
                 end
             end
         end
 
-        powerLabel.Text = "Power: " .. (powerText or "Not Found")
-        timeLabel.Text = "Time: " .. (timeText or "Not Found")
+        -- Mostrar Power en porcentaje
+        if powerValue then
+            local percent = math.clamp((powerValue / maxPower) * 100, 0, 100)
+            powerLabel.Text = "Power: " .. math.floor(percent) .. "%"
+        else
+            powerLabel.Text = "Power: Not Found"
+        end
+
+        -- Mostrar Tiempo
+        timeLabel.Text = "Time: " .. (timeValue or "Not Found")
     end)
 end, function()
     if loop then loop:Disconnect() end
