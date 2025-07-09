@@ -450,7 +450,7 @@ local stuckHide = {active = false}
 local savedCFrame
 local baseplate
 
-addToggle("🕳️ Hide Underground PRO (Base + Teleport)", stuckHide, function()
+addToggle("🕳️ Hide Underground", stuckHide, function()
     local char = LocalPlayer.Character
     if not char then return end
 
@@ -489,38 +489,6 @@ end, function()
     end
 end)
 
--- Anti Tramps
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-
-local antiTrap = {active = false}
-local originalSize
-
-addToggle("🛡️ Anti Tramps", antiTrap, function()
-    local char = LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") then
-        local hrp = char.HumanoidRootPart
-
-        -- Guardar tamaño original
-        originalSize = hrp.Size
-
-        -- Hacer hitbox mínima
-        hrp.Size = Vector3.new(0.1, 0.1, 0.1)
-        hrp.Transparency = 1
-        hrp.CanCollide = false
-    end
-end, function()
-    local char = LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") and originalSize then
-        local hrp = char.HumanoidRootPart
-
-        -- Restaurar hitbox original
-        hrp.Size = originalSize
-        hrp.Transparency = 0
-        hrp.CanCollide = true
-    end
-end)
-
 -- Noclip
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -550,6 +518,50 @@ end, function()
             end
         end
     end
+end)
+
+-- Anti Tramp
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
+
+local LocalPlayer = Players.LocalPlayer
+local antiTrap = {active = false}
+local loop
+
+addToggle("🛡️ Inmunidad Total a Trampas", antiTrap, function()
+    loop = RunService.RenderStepped:Connect(function()
+        for _, obj in pairs(Workspace:GetDescendants()) do
+            -- Verificar si es un Part o un Model que parece trampa
+            if (obj:IsA("BasePart") or obj:IsA("Model")) and (
+                obj.Name:lower():find("trap") or 
+                obj.Name:lower():find("bear trap") or 
+                obj.Name:lower():find("rusty tramp")
+            ) then
+                -- Si es un Part directo ➔ romper TouchInterest
+                if obj:IsA("BasePart") then
+                    for _, child in pairs(obj:GetChildren()) do
+                        if child:IsA("TouchTransmitter") then
+                            child:Destroy()
+                        end
+                    end
+                end
+                -- Si es un Model ➔ buscar su BasePart y romper TouchInterest
+                if obj:IsA("Model") then
+                    local primary = obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")
+                    if primary then
+                        for _, child in pairs(primary:GetChildren()) do
+                            if child:IsA("TouchTransmitter") then
+                                child:Destroy()
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end, function()
+    if loop then loop:Disconnect() end
 end)
 
 -- Kill Players
