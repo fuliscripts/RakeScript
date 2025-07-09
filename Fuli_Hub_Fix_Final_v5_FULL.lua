@@ -489,6 +489,38 @@ end, function()
     end
 end)
 
+-- Anti Tramps
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local antiTrap = {active = false}
+local originalSize
+
+addToggle("🛡️ Anti Tramps", antiTrap, function()
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        local hrp = char.HumanoidRootPart
+
+        -- Guardar tamaño original
+        originalSize = hrp.Size
+
+        -- Hacer hitbox mínima
+        hrp.Size = Vector3.new(0.1, 0.1, 0.1)
+        hrp.Transparency = 1
+        hrp.CanCollide = false
+    end
+end, function()
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") and originalSize then
+        local hrp = char.HumanoidRootPart
+
+        -- Restaurar hitbox original
+        hrp.Size = originalSize
+        hrp.Transparency = 0
+        hrp.CanCollide = true
+    end
+end)
+
 -- Noclip
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
