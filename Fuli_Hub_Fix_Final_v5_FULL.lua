@@ -449,7 +449,7 @@ local stuckFalling = {active = false}
 local savedCFrame
 local loop
 
-addToggle("🕳️ Stuck Falling (Exact Like Red)", stuckFalling, function()
+addToggle("🕳️ Stuck Falling", stuckFalling, function()
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChildOfClass("Humanoid") then
         local hrp = char.HumanoidRootPart
