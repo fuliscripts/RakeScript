@@ -440,41 +440,40 @@ end, function()
     if espPlayers.loop then espPlayers.loop:Disconnect() end
 end)
 
--- Hide Underground
+-- Hide Underground 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+
 local LocalPlayer = Players.LocalPlayer
-
-local hideUnderground = {active = false}
+local hideFalling = {active = false}
 local loop
-local originalCFrame
+local savedCFrame
 
--- Define una posición segura debajo del mapa (ajusta si quieres)
-local undergroundPosition = Vector3.new(0, -50, 0)  
-
-addToggle("🕳️ Hide Underground", hideUnderground, function()
+addToggle("🕳️ Fake Fall Under Map", hideFalling, function()
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") then
         local hrp = char.HumanoidRootPart
 
-        -- Guardar posición original para volver después
-        originalCFrame = hrp.CFrame
+        -- Guardar la posición actual
+        savedCFrame = hrp.CFrame
 
-        -- Teleport real bajo el mapa
-        hrp.CFrame = CFrame.new(undergroundPosition)
-        hrp.Anchored = true
+        -- Mover al jugador a una zona segura bajo el mapa
+        hrp.CFrame = CFrame.new(hrp.Position.X, -100, hrp.Position.Z)
+
+        -- Loop para simular caída infinita
+        loop = RunService.RenderStepped:Connect(function()
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                hrp.CFrame = hrp.CFrame * CFrame.new(0, -0.5, 0) -- Baja lentamente
+            end
+        end)
     end
 end, function()
+    if loop then loop:Disconnect() end
+
     local char = LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") then
-        local hrp = char.HumanoidRootPart
-
+    if char and char:FindFirstChild("HumanoidRootPart") and savedCFrame then
         -- Volver a la posición original
-        if originalCFrame then
-            hrp.CFrame = originalCFrame + Vector3.new(0, 10, 0) -- Sube 10 studs para no caer
-        end
-
-        hrp.Anchored = false
+        char.HumanoidRootPart.CFrame = savedCFrame + Vector3.new(0, 10, 0)
     end
 end)
 
