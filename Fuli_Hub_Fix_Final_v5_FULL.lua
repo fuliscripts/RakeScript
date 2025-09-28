@@ -115,7 +115,7 @@ local LocalPlayer = Players.LocalPlayer
 local aura = {active = false}
 local loop
 
-addToggle("🦴 StunStick Aura", aura, function()
+addToggle("🦴 StunStick Modifier", aura, function()
     loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if not char then return end
@@ -158,7 +158,7 @@ end)
 
 -- Kill NPCs
 local killNPC = {active = false}
-addToggle("🔪 Kill NPCs (Seren)", killNPC, function()
+addToggle("🔪 Kill Seren", killNPC, function()
 killNPC.loop = RunService.RenderStepped:Connect(function()
 for _, m in pairs(Workspace:GetDescendants()) do
 if m:IsA("Model") and not Players:FindFirstChild(m.Name) then
@@ -236,9 +236,9 @@ addToggle("🧭 Power + Time", powerTimeHUD, function()
             if gui:IsA("ScreenGui") then
                 for _, element in pairs(gui:GetDescendants()) do
                     if element:IsA("TextLabel") then
-                        if element.Text:lower():find("power station level") then
+                        if element.Text:lower():find("energy") then
                             powerValue = tonumber(element.Text:match("%d+"))
-                        elseif element.Text:lower():find("time left") then
+                        elseif element.Text:lower():find("timer") then
                             timeValue = element.Text
                         end
                     end
