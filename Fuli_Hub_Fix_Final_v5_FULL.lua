@@ -467,7 +467,7 @@ addToggle("🕳️ Hide Underground", stuckHide, function()
 
     -- Crear base invisible para atascarse
     baseplate = Instance.new("Part")
-    baseplate.Size = Vector3.new(10, 1, 10)
+    baseplate.Size = Vector3.new(10, 10, 10)
     baseplate.Position = Vector3.new(targetPos.X, targetPos.Y - 1, targetPos.Z)
     baseplate.Anchored = true
     baseplate.CanCollide = true
