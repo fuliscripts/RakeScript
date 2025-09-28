@@ -115,7 +115,7 @@ local LocalPlayer = Players.LocalPlayer
 local aura = {active = false}
 local loop
 
-addToggle("🦴 StunStick Modifier", aura, function()
+addToggle("🦴 StunStick", aura, function()
     loop = RunService.RenderStepped:Connect(function()
         local char = LocalPlayer.Character
         if not char then return end
@@ -236,7 +236,7 @@ addToggle("🧭 Power + Time", powerTimeHUD, function()
             if gui:IsA("ScreenGui") then
                 for _, element in pairs(gui:GetDescendants()) do
                     if element:IsA("TextLabel") then
-                        if element.Text:lower():find("energy") then
+                        if element.Text:lower():find("power") then
                             powerValue = tonumber(element.Text:match("%d+"))
                         elseif element.Text:lower():find("timer") then
                             timeValue = element.Text
@@ -331,7 +331,7 @@ addToggle("🔎 ESP Scraps + Tramps", espItems, function()
             elseif obj:IsA("Model") and (
                 obj.Name:lower():find("scrap") or
                 obj.Name:lower():find("trap") or
-                obj.Name:lower():find("rusty tramp") or
+                obj.Name:lower():find("rusty trap") or
                 obj.Name:lower():find("bear trap")
             ) then
                 local primary = obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")
