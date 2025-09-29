@@ -620,3 +620,25 @@ local spy = {active = false}
 local oldNamecall
 local hooked = false
 
+local autoStun = {active = false}
+
+addToggle("⚡ Auto Stun Rake", autoStun, function()
+    autoStun.loop = RunService.RenderStepped:Connect(function()
+        local char = LocalPlayer.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            local tool = char:FindFirstChild("StunStick") or LocalPlayer.Backpack:FindFirstChild("StunStick")
+            if tool and char:FindFirstChild("HumanoidRootPart") then
+                for _, m in pairs(Workspace:GetDescendants()) do
+                    if m:IsA("Model") and m.Name:lower():find("rake") and m:FindFirstChild("HumanoidRootPart") then
+                        local distance = (m.HumanoidRootPart.Position - char.HumanoidRootPart.Position).Magnitude
+                        if distance < 12 then -- rango para stun
+                            tool:Activate() -- activa el stun automáticamente
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end, function()
+    if autoStun.loop then autoStun.loop:Disconnect() end
+end)
