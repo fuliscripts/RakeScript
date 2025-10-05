@@ -462,7 +462,7 @@ addToggle("🕳️ Hide Underground", stuckHide, function()
     savedCFrame = hrp.CFrame
 
     -- Teleport a posición bajo tierra (Y = -20)
-    local targetPos = Vector3.new(hrp.Position.X, -20, hrp.Position.Z)
+    local targetPos = Vector3.new(hrp.Position.X, 800, hrp.Position.Z)
     hrp.CFrame = CFrame.new(targetPos)
 
     -- Crear base invisible para atascarse
