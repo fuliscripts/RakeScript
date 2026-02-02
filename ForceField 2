@@ -1,0 +1,34 @@
+-- [[ CONFIGURACIÓN ]]
+local p = game.Players.LocalPlayer
+local char = p.Character or p.CharacterAdded:Wait()
+
+-- 1. CREAR EL FORCEFIELD (Localmente)
+local ff = Instance.new("ForceField")
+ff.Visible = true
+ff.Parent = char
+
+-- 2. BUCLE DE INDESTRUCTIBILIDAD (God Mode Básico)
+-- Esto intenta resetear tu vida si el juego intenta quitártela
+spawn(function()
+    while task.wait() do
+        if char:FindFirstChildOfClass("Humanoid") then
+            char.Humanoid.Health = char.Humanoid.MaxHealth
+        end
+    end
+end)
+
+-- 3. ESCÁNER DE REPLICACIÓN (Para que otros lo vean)
+-- Este código busca "Remotes" que el juego use para efectos visuales
+print("--- Escaneando Remotes vulnerables ---")
+for _, v in pairs(game:GetDescendants()) do
+    if v:IsA("RemoteEvent") then
+        -- Filtramos nombres comunes que suelen dar efectos o escudos
+        if v.Name:find("Shield") or v.Name:find("Effect") or v.Name:find("Power") then
+            print("Posible evento encontrado: " .. v.Name .. " en " .. v.Parent.Name)
+            -- Intento de disparo automático (Úsalo con cuidado)
+            -- v:FireServer(true) 
+        end
+    end
+end
+
+print("ForceField activado. Si no te ven, el juego tiene FilteringEnabled (FE).")
