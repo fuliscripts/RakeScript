@@ -642,39 +642,3 @@ addToggle("⚡ Auto Stun Rake", autoStun, function()
 end, function()
     if autoStun.loop then autoStun.loop:Disconnect() end
 end)
-
-local forceFieldToggle = {active = false}
-
-addToggle("🪩 ForceField", forceFieldToggle, function()
-
-    forceFieldToggle.loop = RunService.RenderStepped:Connect(function()
-        local char = LocalPlayer.Character
-        if not char then return end
-
-        local hum = char:FindFirstChildOfClass("Humanoid")
-        if not hum then return end
-
-        -- si no existe, lo vuelve a crear
-        if not char:FindFirstChildOfClass("ForceField") then
-            local ff = Instance.new("ForceField")
-            ff.Visible = true -- BURBUJA AZUL
-            ff.Parent = char
-        end
-    end)
-
-end, function()
-
-    -- detener loop
-    if forceFieldToggle.loop then
-        forceFieldToggle.loop:Disconnect()
-        forceFieldToggle.loop = nil
-    end
-
-    -- eliminar ForceField
-    local char = LocalPlayer.Character
-    if char then
-        local ff = char:FindFirstChildOfClass("ForceField")
-        if ff then ff:Destroy() end
-    end
-
-end)
