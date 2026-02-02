@@ -1,0 +1,17 @@
+game.Players.PlayerAdded:Connect(function(player)
+	player.CharacterAdded:Connect(function(character)
+		-- Wait for the humanoid to exist
+		local humanoid = character:WaitForChild("Humanoid")
+		
+		-- Create the ForceField
+		local ff = Instance.new("ForceField")
+		ff.Visible = true -- Ensure it is visible
+		ff.Parent = character
+		
+		-- Optional: Make it look more classic by controlling color (2007-2011)
+		-- The default ForceField material already provides the blue aura.
+		
+		-- Optional: Remove after 5 seconds
+		game.Debris:AddItem(ff, 5)
+	end)
+end)
