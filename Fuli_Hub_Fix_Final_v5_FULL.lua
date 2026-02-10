@@ -643,40 +643,6 @@ end, function()
     if autoStun.loop then autoStun.loop:Disconnect() end
 end)
 
-local auraTrail = {active = false}
-
-addToggle("✨ Aura Trail Super Sonic", auraTrail, function()
-    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-    local root = char:WaitForChild("HumanoidRootPart")
-
-    local trail = Instance.new("Trail")
-    trail.Name = "AuraTrail"
-
-    local a0 = Instance.new("Attachment", root)
-    local a1 = Instance.new("Attachment", root)
-    a0.Position = Vector3.new(-1, 1.5, 0)
-    a1.Position = Vector3.new(1, -1.5, 0)
-
-    trail.Attachment0 = a0
-    trail.Attachment1 = a1
-    trail.Lifetime = 0.6
-    trail.MinLength = 0.1
-    trail.FaceCamera = false
-    trail.LightInfluence = 1
-    trail.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 215, 0)), -- Oro
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255)) -- Blanco brillante
-    }
-    trail.Transparency = NumberSequence.new(0.1)
-
-    trail.Parent = root
-    auraTrail.trail = trail
-end, function()
-    if auraTrail.trail then
-        auraTrail.trail:Destroy()
-    end
-end)
-
 -- 🌀 Speed Trail Automático (como Sonic)
 local autoTrail = {active = false}
 local speedTrailInstance = nil
@@ -723,7 +689,6 @@ end, function()
     if autoTrail.loop then autoTrail.loop:Disconnect() end
     if speedTrailInstance then speedTrailInstance:Destroy() end
 end)
-
 
 -- ✨ Aura Trail (como Super Sonic)
 local auraTrail = {active = false}
