@@ -643,51 +643,48 @@ end, function()
     if autoStun.loop then autoStun.loop:Disconnect() end
 end)
 
--- 🌀 Speed Trail Automático (como Sonic)
-local autoTrail = {active = false}
-local speedTrailInstance = nil
+local sonicTrail = {active = false}
 
-addToggle("🌀 Sonic Speed Trail", autoTrail, function()
-    autoTrail.loop = RunService.RenderStepped:Connect(function()
-        local char = LocalPlayer.Character
-        if not char then return end
+addToggle("⚡ Sonic Speed Trail", sonicTrail, function()
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local hrp = char:WaitForChild("HumanoidRootPart")
 
-        local hrp = char:FindFirstChild("HumanoidRootPart")
-        local hum = char:FindFirstChildOfClass("Humanoid")
+    -- Crear Attachments
+    local att1 = Instance.new("Attachment", hrp)
+    att1.Position = Vector3.new(0, -0.5, 0)
+    local att2 = Instance.new("Attachment", hrp)
+    att2.Position = Vector3.new(0, 0.5, -2)
 
-        if hrp and hum then
-            if hum.MoveDirection.Magnitude > 0.5 then
-                if not speedTrailInstance then
-                    local trail = Instance.new("Trail")
-                    trail.Name = "AutoSpeedTrail"
-                    local a0 = Instance.new("Attachment", hrp)
-                    local a1 = Instance.new("Attachment", hrp)
-                    a0.Position = Vector3.new(0, 2, 0)
-                    a1.Position = Vector3.new(0, -2, 0)
-                    trail.Attachment0 = a0
-                    trail.Attachment1 = a1
-                    trail.Lifetime = 0.4
-                    trail.MinLength = 0.1
-                    trail.FaceCamera = true
-                    trail.Color = ColorSequence.new{
-                        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 170, 255)),
-                        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
-                    }
-                    trail.Transparency = NumberSequence.new(0.2)
-                    trail.Parent = hrp
-                    speedTrailInstance = trail
-                end
-            else
-                if speedTrailInstance then
-                    speedTrailInstance:Destroy()
-                    speedTrailInstance = nil
-                end
-            end
-        end
-    end)
+    -- Crear el trail
+    local trail = Instance.new("Trail")
+    trail.Name = "SonicTrail"
+    trail.Attachment0 = att1
+    trail.Attachment1 = att2
+    trail.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
+    }
+    trail.Transparency = NumberSequence.new{
+        NumberSequenceKeypoint.new(0, 0),
+        NumberSequenceKeypoint.new(0.7, 0.4),
+        NumberSequenceKeypoint.new(1, 1)
+    }
+    trail.WidthScale = NumberSequence.new{
+        NumberSequenceKeypoint.new(0, 1.5),
+        NumberSequenceKeypoint.new(1, 0) -- Cola puntiaguda
+    }
+    trail.LightEmission = 1
+    trail.Lifetime = 0.4
+    trail.Parent = hrp
+
+    sonicTrail.trail = trail
+    sonicTrail.att1 = att1
+    sonicTrail.att2 = att2
 end, function()
-    if autoTrail.loop then autoTrail.loop:Disconnect() end
-    if speedTrailInstance then speedTrailInstance:Destroy() end
+    -- Desactivar el trail
+    if sonicTrail.trail then sonicTrail.trail:Destroy() end
+    if sonicTrail.att1 then sonicTrail.att1:Destroy() end
+    if sonicTrail.att2 then sonicTrail.att2:Destroy() end
 end)
 
 -- ✨ Aura Trail (como Super Sonic)
