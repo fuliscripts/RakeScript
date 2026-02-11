@@ -643,21 +643,19 @@ end, function()
     if autoStun.loop then autoStun.loop:Disconnect() end
 end)
 
-local sonicTrail = {active = false}
+local bigTrail = {active = false}
 
-addToggle("⚡ Sonic Speed Trail", sonicTrail, function()
+addToggle("⚡ Sonic Trail Volumétrico", bigTrail, function()
     local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
     local hrp = char:WaitForChild("HumanoidRootPart")
 
-    -- Crear Attachments
     local att1 = Instance.new("Attachment", hrp)
-    att1.Position = Vector3.new(0, -0.5, 0)
+    att1.Position = Vector3.new(0, -1.5, 0) -- más bajo
     local att2 = Instance.new("Attachment", hrp)
-    att2.Position = Vector3.new(0, 0.5, -2)
+    att2.Position = Vector3.new(0, 1.5, -3.5) -- más largo
 
-    -- Crear el trail
     local trail = Instance.new("Trail")
-    trail.Name = "SonicTrail"
+    trail.Name = "FullBodySonicTrail"
     trail.Attachment0 = att1
     trail.Attachment1 = att2
     trail.Color = ColorSequence.new{
@@ -670,21 +668,21 @@ addToggle("⚡ Sonic Speed Trail", sonicTrail, function()
         NumberSequenceKeypoint.new(1, 1)
     }
     trail.WidthScale = NumberSequence.new{
-        NumberSequenceKeypoint.new(0, 1.5),
-        NumberSequenceKeypoint.new(1, 0) -- Cola puntiaguda
+        NumberSequenceKeypoint.new(0, 4),  -- más grueso
+        NumberSequenceKeypoint.new(1, 0)   -- puntiagudo
     }
     trail.LightEmission = 1
-    trail.Lifetime = 0.4
+    trail.Lifetime = 0.5
+    trail.FaceCamera = true
     trail.Parent = hrp
 
-    sonicTrail.trail = trail
-    sonicTrail.att1 = att1
-    sonicTrail.att2 = att2
+    bigTrail.trail = trail
+    bigTrail.att1 = att1
+    bigTrail.att2 = att2
 end, function()
-    -- Desactivar el trail
-    if sonicTrail.trail then sonicTrail.trail:Destroy() end
-    if sonicTrail.att1 then sonicTrail.att1:Destroy() end
-    if sonicTrail.att2 then sonicTrail.att2:Destroy() end
+    if bigTrail.trail then bigTrail.trail:Destroy() end
+    if bigTrail.att1 then bigTrail.att1:Destroy() end
+    if bigTrail.att2 then bigTrail.att2:Destroy() end
 end)
 
 -- ✨ Aura Trail (como Super Sonic)
