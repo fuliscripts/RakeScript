@@ -645,7 +645,7 @@ end)
 
 local bigTrail = {active = false}
 
-addToggle("⚡ Sonic Trail Volumétrico", bigTrail, function()
+addToggle("🔵 Sonic Trail", bigTrail, function()
     local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
     local hrp = char:WaitForChild("HumanoidRootPart")
 
@@ -685,37 +685,44 @@ end, function()
     if bigTrail.att2 then bigTrail.att2:Destroy() end
 end)
 
--- ✨ Aura Trail (como Super Sonic)
-local auraTrail = {active = false}
+local bigTrail = {active = false}
 
-addToggle("✨ Super Sonic Aura", auraTrail, function()
+addToggle("✨️ Super Sonic Trail", bigTrail, function()
     local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-    local root = char:WaitForChild("HumanoidRootPart")
+    local hrp = char:WaitForChild("HumanoidRootPart")
+
+    local att1 = Instance.new("Attachment", hrp)
+    att1.Position = Vector3.new(0, -1.5, 0)
+    local att2 = Instance.new("Attachment", hrp)
+    att2.Position = Vector3.new(0, 1.5, -3.5)
 
     local trail = Instance.new("Trail")
-    trail.Name = "AuraTrail"
-
-    local a0 = Instance.new("Attachment", root)
-    local a1 = Instance.new("Attachment", root)
-    a0.Position = Vector3.new(-1, 1.5, 0)
-    a1.Position = Vector3.new(1, -1.5, 0)
-
-    trail.Attachment0 = a0
-    trail.Attachment1 = a1
-    trail.Lifetime = 0.6
-    trail.MinLength = 0.1
-    trail.FaceCamera = false
-    trail.LightInfluence = 1
+    trail.Name = "SuperSonicTrail"
+    trail.Attachment0 = att1
+    trail.Attachment1 = att2
     trail.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 215, 0)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 215, 0)), -- Oro brillante
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255)) -- Blanco para brillar
     }
-    trail.Transparency = NumberSequence.new(0.1)
+    trail.Transparency = NumberSequence.new{
+        NumberSequenceKeypoint.new(0, 0),
+        NumberSequenceKeypoint.new(0.7, 0.4),
+        NumberSequenceKeypoint.new(1, 1)
+    }
+    trail.WidthScale = NumberSequence.new{
+        NumberSequenceKeypoint.new(0, 4),  -- más grueso al inicio
+        NumberSequenceKeypoint.new(1, 0)   -- termina en punta
+    }
+    trail.LightEmission = 1
+    trail.Lifetime = 0.5
+    trail.FaceCamera = true
+    trail.Parent = hrp
 
-    trail.Parent = root
-    auraTrail.trail = trail
+    bigTrail.trail = trail
+    bigTrail.att1 = att1
+    bigTrail.att2 = att2
 end, function()
-    if auraTrail.trail then
-        auraTrail.trail:Destroy()
-    end
+    if bigTrail.trail then bigTrail.trail:Destroy() end
+    if bigTrail.att1 then bigTrail.att1:Destroy() end
+    if bigTrail.att2 then bigTrail.att2:Destroy() end
 end)
